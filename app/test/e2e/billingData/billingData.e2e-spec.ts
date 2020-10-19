@@ -42,7 +42,7 @@ describe('BillingData AppController (e2e)', () => {
     const result = request(app.getHttpServer())
       .post('/api/users')
       .set('uid', 'test')
-      .send(mockUser.users[0])
+      .send(mockUser.usersE2E[0])
       .expect(HttpStatus.CREATED)
     return result;
   });

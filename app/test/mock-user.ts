@@ -25,6 +25,27 @@ export const mockUser = {
       email: "test@test.com"
     }
   ],
+  usersE2E: [
+    {
+      accountId: 1,
+      vendorId: 1,
+      externalId: "1234",
+      firstName: "Alexis",
+      middleName: "Javier",
+      lastName: "Pinaida",
+      secondLastName: "Simbaña",
+      phone: "0958963171",
+      document: "1719711176",
+      documentType: documentType.CI,
+      maritalStatus: maritalStatus.MARRIED,
+      genre: genre.MALE,
+      active: true,
+      registeredPlatform: "WEB",
+      birthdate: "1994-05-01",
+      uid: "test",
+      email: "test@test.com"
+    }
+  ],
   entityUsers: [
     {
       id: 1,

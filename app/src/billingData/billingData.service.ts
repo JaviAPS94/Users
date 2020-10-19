@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import * as _ from "lodash";
 import {
-  IPaginationOptions, paginate,
+  IPaginationOptions,
   Pagination
 } from 'nestjs-typeorm-paginate';
 import { getManager } from "typeorm";

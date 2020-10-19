@@ -3,15 +3,15 @@ import { Request, Response } from 'express';
 import * as _ from "lodash";
 
 export const uid = (req: Request, res: Response, next: Function) => {
-  let uid;
+  let uidInRequest;
   if (req.params.uid) {
-    uid = req.params.uid;
+    uidInRequest = req.params.uid;
   } else if (req.query.uid) {
-    uid = req.query.uid;
+    uidInRequest = req.query.uid;
   } else if (req.body.uid) {
-    uid = req.body.uid;
+    uidInRequest = req.body.uid;
   } else if (req.headers.hasOwnProperty('uid')) {
-    uid = req.headers.uid;
+    uidInRequest = req.headers.uid;
   }
   let email;
   if (req.headers.hasOwnProperty('email')) {
@@ -28,12 +28,12 @@ export const uid = (req: Request, res: Response, next: Function) => {
     email = req.headers['client-version'];
   }
 
-  if (!_.isUndefined(uid)) {
+  if (!_.isUndefined(uidInRequest)) {
     if (req.method === "POST" || req.method === "PUT") {
-      req.body.uid = uid;
+      req.body.uid = uidInRequest;
     }
     if (req.method === "GET") {
-      req.query.uid = uid;
+      req.query.uid = uidInRequest;
     }
   }
   if (!_.isUndefined(email)) {
