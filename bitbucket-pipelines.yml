@@ -6,7 +6,7 @@ pipelines:
         script:
           - make docker-build-users docker-export-users
         artifacts:
-          - ecommerce-users.docker
+          - ecommerce-ms-users.docker
         services:
           - docker
         caches:
@@ -14,7 +14,7 @@ pipelines:
     - step:
         name: Unit tests
         script:
-          - make docker-import-users INPUTFILE_PATH=../ecommerce-users.docker
+          - make docker-import-users INPUTFILE_PATH=../ecommerce-ms-users.docker
           - make run-unit-tests VERSION=latest
         artifacts:
           - app/coverage/**
@@ -29,7 +29,7 @@ pipelines:
     - step:
         name: E2e tests
         script:
-          - make docker-import-users INPUTFILE_PATH=../ecommerce-users.docker
+          - make docker-import-users INPUTFILE_PATH=../ecommerce-ms-users.docker
           - make run-e2e-tests VERSION=latest
         services:
           - docker
@@ -48,7 +48,7 @@ pipelines:
       - step:
           name: Unit tests
           script:
-            - make docker-import-users INPUTFILE_PATH=../ecommerce-users.docker
+            - make docker-import-users INPUTFILE_PATH=../ecommerce-ms-users.docker
             - make run-unit-tests VERSION=latest
           artifacts:
             - app/coverage/**
@@ -63,14 +63,14 @@ pipelines:
       - step:
           name: E2e tests
           script:
-            - make docker-import-users INPUTFILE_PATH=../ecommerce-users.docker
+            - make docker-import-users INPUTFILE_PATH=../ecommerce-ms-users.docker
             - make run-e2e-tests VERSION=latest
           services:
             - docker
       - step:
           name: Push to ECR
           script:
-            - make docker-import-users INPUTFILE_PATH=../ecommerce-users.docker
+            - make docker-import-users INPUTFILE_PATH=../ecommerce-ms-users.docker
             - make docker-login
             - make docker-package-users docker-publish-users VERSION="$BITBUCKET_TAG"
           services:
