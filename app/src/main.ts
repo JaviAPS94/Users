@@ -1,15 +1,21 @@
 import { NestFactory } from '@nestjs/core';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
 import { AppModule } from './app.module';
-import { ValidationPipe } from './validation.pipe'
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { uid } from './common/middleware/uid.middleware';
+import { ValidationPipe } from './validation.pipe';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: true
+  });
+  app.use(bodyParser.json());
   app.useGlobalPipes(new ValidationPipe());
+  app.use(uid);
 
   const options = new DocumentBuilder()
-    .setTitle('API Project Name')
-    .setDescription('API Description')
+    .setTitle('API Users')
+    .setDescription('API Users manages users, billing data, shipping address resources')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, options);

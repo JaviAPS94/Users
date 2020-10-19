@@ -1,4 +1,4 @@
-import { Test, TestingModule } from 'test/e2e/plans/node_modules/@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { HealthController } from './health.controller';
 import {HealthcheckIndicator}  from './health.service';
 import { TerminusModule } from '@nestjs/terminus';
@@ -19,7 +19,7 @@ describe('Health Controller', () => {
 
 
   it('healthcheck should return status up', async () => {
-    const expectedResponse= "{status: 'ok',info: { 'ms-subscriptions': { status: 'up' } },error: {},details: { 'ms-subscriptions': { status: 'up' } }}";
+    const expectedResponse= "{status: 'ok',info: { 'ms-users': { status: 'up' } },error: {},details: { 'ms-users': { status: 'up' } }}";
     
     const response= await healthController.healthcheck();
     

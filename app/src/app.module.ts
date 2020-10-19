@@ -1,13 +1,13 @@
-import { Module } from 'test/e2e/plans/node_modules/@nestjs/common';
-import { TypeOrmModule } from 'test/e2e/plans/node_modules/@nestjs/typeorm';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { BillingDataModule } from './billingData/billingData.module';
 import { HealthModule } from './health/health.module';
-import { PlanModule } from './plans/plan.module';
-import { FamilyPlanService } from './plans/family-plan.service';
+import { UserModule } from './users/user.module';
 import { EntityManagerWrapperService } from './utils/entity-manager-wrapper.service';
 
 @Module({
-  imports: [HealthModule, TypeOrmModule.forRoot(), PlanModule],
-  providers: [FamilyPlanService, EntityManagerWrapperService],
+  imports: [HealthModule, TypeOrmModule.forRoot(), UserModule, BillingDataModule],
+  providers: [EntityManagerWrapperService],
   controllers: []
 })
 export class AppModule { }

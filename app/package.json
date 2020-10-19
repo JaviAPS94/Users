@@ -29,15 +29,18 @@
     "@nestjs/terminus": "^7.0.1",
     "@nestjs/typeorm": "^7.1.0",
     "@types/lodash": "^4.14.159",
+    "body-parser": "^1.19.0",
+    "class-transformer": "^0.3.1",
+    "class-validator": "^0.12.2",
     "lodash": "^4.17.20",
+    "moment": "^2.29.1",
     "mysql": "^2.18.1",
+    "nestjs-typeorm-paginate": "^2.2.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
-    "typeorm": "0.2.25",
-    "class-transformer": "^0.3.1",
-    "class-validator": "^0.12.2",
-    "swagger-ui-express": "^4.1.4"
+    "swagger-ui-express": "^4.1.4",
+    "typeorm": "0.2.25"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",
