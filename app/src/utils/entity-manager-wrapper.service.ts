@@ -3,6 +3,7 @@ import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { EntityManager } from 'typeorm';
 import { orderByEnum } from '../billingData/enums/order-by.enum';
 import { BillingData } from '../entity/BillingData';
+import { LivingPlace } from '../entity/LivingPlace';
 import { ShippingAddress } from '../entity/ShippingAddress';
 import { User } from '../entity/User';
 import typeorm = require('typeorm');
@@ -55,5 +56,23 @@ export class EntityManagerWrapperService {
 
   public async deleteShippingAddress(id: number) {
     return await this.connection.getRepository(ShippingAddress).softDelete(id);
+  }
+
+  public async findLivingPlacesByCountryId(countryId: number, orderBy: orderByEnum, sortBy: string) {
+    const sortByLivingPlaceField = "living-place." + sortBy;
+    const livingPlaces = await this.connection.getRepository(LivingPlace)
+      .createQueryBuilder("living-place")
+      .where("living-place.countryId = :countryId", { countryId })
+      .orderBy(sortByLivingPlaceField, orderBy)
+      .getMany();
+    return livingPlaces;
+  }
+
+  public async findLivingPlaceById(sentence: {}) {
+    return await this.connection.getRepository(LivingPlace).findOne(sentence);
+  }
+
+  public async deleteLivingPlace(id: number) {
+    return await this.connection.getRepository(LivingPlace).softDelete(id);
   }
 }
