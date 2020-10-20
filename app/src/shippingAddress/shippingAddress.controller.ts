@@ -1,16 +1,16 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
-import { BillingDataService } from './billingData.service';
-import { BillingDataDto } from './dto/billing-data.dto';
-import { orderByEnum } from './enums/order-by.enum';
+import { orderByEnum } from '../../src/billingData/enums/order-by.enum';
+import { ShippingAddressDto } from './dto/shipping-address.dto';
+import { ShippingAddressService } from './shippingAddress.service';
 
-@Controller('api/billing-data')
-export class BillingDataController {
-  constructor(private readonly billingDataService: BillingDataService) { }
+@Controller('api/shipping-address')
+export class ShippingAddressController {
+  constructor(private readonly shippingAddressService: ShippingAddressService) { }
 
   @Post()
-  async create(@Body() billingDataDto: BillingDataDto) {
+  async create(@Body() shippingAddressDto: ShippingAddressDto) {
     try {
-      return await this.billingDataService.saveBillingData(billingDataDto);
+      return await this.shippingAddressService.saveShippingAddress(shippingAddressDto);
     }
     catch (error) {
       throw new HttpException({
@@ -21,29 +21,29 @@ export class BillingDataController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: number, @Body() updateBillingData: BillingDataDto) {
+  async update(@Param('id') id: number, @Body() updateShippingAddress: ShippingAddressDto) {
     try {
-      return await this.billingDataService.updateBillingDataById(id, updateBillingData);
+      return await this.shippingAddressService.updateShippingAddressById(id, updateShippingAddress);
     }
     catch (error) {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
-        error: 'An error ocurred updating billing data ' + error.message,
+        error: 'An error ocurred updating shipping address ' + error.message,
       }, HttpStatus.FORBIDDEN);
     }
   }
 
   @Get()
-  async findBillingData(
+  async findShippingAddress(
     @Query('page') page: number = 1,
     @Query('size') size: number = 10,
     @Query('orderBy') orderBy: orderByEnum = orderByEnum.ASC,
-    @Query('sortBy') sortBy: string = "name",
+    @Query('sortBy') sortBy: string = "nickname",
     @Query('uid') uid: string) {
     let result;
     try {
       size = size > 100 ? 100 : size;
-      result = await this.billingDataService.getBillingData(uid, orderBy, sortBy, {
+      result = await this.shippingAddressService.getShippingAddress(uid, orderBy, sortBy, {
         page,
         limit: size,
         route: "http://host"
@@ -58,7 +58,7 @@ export class BillingDataController {
     if (result.items.length === 0) {
       throw new HttpException({
         status: HttpStatus.NOT_FOUND,
-        error: 'No billing data for user with uid: ' + uid,
+        error: 'No shipping address for user with uid: ' + uid,
       }, HttpStatus.NOT_FOUND);
     }
     return result;
@@ -67,12 +67,12 @@ export class BillingDataController {
   @Delete(':id')
   async delete(@Param('id') id: number) {
     try {
-      return await this.billingDataService.deleteBillingDataById(id);
+      return await this.shippingAddressService.deleteShippingAddressById(id);
     }
     catch (error) {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
-        error: 'An error ocurred deleting billing data ' + error.message,
+        error: 'An error ocurred deleting shipping address ' + error.message,
       }, HttpStatus.FORBIDDEN);
     }
   }

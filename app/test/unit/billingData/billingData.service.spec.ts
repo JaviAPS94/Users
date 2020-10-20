@@ -88,7 +88,7 @@ describe('BillingDataService', () => {
     }
   });
 
-  it('should update a plan in db', async () => {
+  it('should update a billing data in db', async () => {
     mockUpdateBillingDataSuccessful();
     const returnedBillingData = mockFindBillingDataById();
     const dataToUpdate = mockBillingData.billingData[0];
@@ -172,7 +172,7 @@ describe('BillingDataService', () => {
     }
   });
 
-  it('should soft delete a plan in db', async () => {
+  it('should soft delete a billing data in db', async () => {
     mockDeleteBillingDataSuccessful();
     const returnedBillingData = mockFindBillingDataById();
     const expectedResult = mockBillingData.billingDataDeleted[0];

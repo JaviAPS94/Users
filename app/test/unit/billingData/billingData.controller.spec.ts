@@ -162,7 +162,7 @@ describe('BillingData Controller', () => {
       await billingDataController.delete(billingDataIdForDelete);
     } catch (error) {
       expect(error).toBeInstanceOf(HttpException);
-      expect(error.response.error).toContain('An error ocurred deleting plan');
+      expect(error.response.error).toContain('An error ocurred deleting billing data');
       expect(error.status).toBe(HttpStatus.FORBIDDEN);
     }
   });

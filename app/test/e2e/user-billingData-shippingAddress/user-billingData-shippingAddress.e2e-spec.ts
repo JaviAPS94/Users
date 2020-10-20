@@ -1,19 +1,21 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BillingDataModule } from '../../../src/billingData/billingData.module';
 import * as request from 'supertest';
+import { BillingDataModule } from '../../../src/billingData/billingData.module';
+import { ShippingAddressModule } from '../../../src/shippingAddress/shippingAddress.module';
 import { UserModule } from '../../../src/users/user.module';
-import { mockBillingData } from '../../../test/mock-billing-data';
-import { mockUser } from '../../../test/mock-user';
+import { mockBillingData } from '../../mock-billing-data';
+import { mockShippingAddress } from '../../mock-shipping-address';
+import { mockUser } from '../../mock-user';
 
-describe('BillingData AppController (e2e)', () => {
+describe('User AppController (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [UserModule, BillingDataModule,
+      imports: [UserModule, BillingDataModule, ShippingAddressModule,
         TypeOrmModule.forRoot({
           type: 'mysql',
           host: 'db-test',
@@ -33,6 +35,14 @@ describe('BillingData AppController (e2e)', () => {
   it('Api BillingData (GET)', () => {
     const result = request(app.getHttpServer())
       .get('/api/billing-data')
+      .set('uid', '132')
+      .expect(HttpStatus.NOT_FOUND);
+    return result;
+  });
+
+  it('Api ShippingAddress (GET)', () => {
+    const result = request(app.getHttpServer())
+      .get('/api/shipping-address')
       .set('uid', '132')
       .expect(HttpStatus.NOT_FOUND);
     return result;
@@ -64,6 +74,27 @@ describe('BillingData AppController (e2e)', () => {
   it('Api BillingData (DELETE)', () => {
     const result = request(app.getHttpServer())
       .delete('/api/billing-data/1')
+      .expect(HttpStatus.OK);
+    return result;
+  });
+
+  it('Api ShippingAddress (POST)', () => {
+    const result = request(app.getHttpServer())
+      .post('/api/shipping-address').send(mockShippingAddress.shippingAddress[0])
+      .expect(HttpStatus.CREATED);
+    return result;
+  });
+
+  it('Api ShippingAddress (PUT)', () => {
+    const result = request(app.getHttpServer())
+      .put('/api/shipping-address/1').send(mockShippingAddress.shippingAddress[0])
+      .expect(HttpStatus.OK);
+    return result;
+  });
+
+  it('Api ShippingAddress (DELETE)', () => {
+    const result = request(app.getHttpServer())
+      .delete('/api/shipping-address/1')
       .expect(HttpStatus.OK);
     return result;
   });

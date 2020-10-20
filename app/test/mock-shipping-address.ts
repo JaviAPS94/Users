@@ -1,39 +1,63 @@
-import { documentType } from "../src/users/enums/document-type.enum";
 
-export const mockBillingData = {
-  billingData: [
+export const mockShippingAddress = {
+  shippingAddress: [
     {
-      nickname: "test",
-      name: "test",
-      documentType: documentType.CI,
-      document: "1719711176",
-      address: "Quito",
-      phone: "0958963171",
-      email: "alex.pinaida@trade.ec",
+      uid: "test",
       default: true,
-      uid: "test"
+      lat: 0.67,
+      lng: 0.89,
+      mainStreet: "Heleodoro Ayaala",
+      number: "E9A",
+      secondaryStreet: "Pasaje S12F",
+      addressReference: "Arriba sector el triangulo",
+      livingPlace: {
+        id: 1,
+        fields: [
+          {
+            id: "test",
+            value: "test"
+          }
+        ]
+      }
     }
   ],
-  billingDataEntity: [
+  shippingAddressEntity: [
     {
-      id: 1,
-      name: 'test',
-      address: 'Quito',
-      default: 1,
-      document: '1719711176',
-      documentType: 'CI',
-      nickname: 'test',
-      additionalInfo: null,
-      email: 'alex.pinaida@trade.ec',
-      phone: '0958963171',
-      externalId: null,
+      default: true,
+      lat: 0.67,
+      lng: 0.89,
+      mainStreet: "Heleodoro Ayaala",
+      number: "E9A",
+      secondaryStreet: "Pasaje S12F",
+      addressReference: "Arriba sector el triangulo",
+      livingPlace: {
+        id: 1,
+        fields: [
+          {
+            id: "test",
+            value: "test"
+          }
+        ]
+      },
+      uid: "132",
       userId: 1,
-      createdAt: "2020-10-18T20:57:17.528Z",
-      updatedAt: "2020-10-18T20:57:17.528Z",
-      deleteAt: null
+      nickname: null,
+      zone: null,
+      country: null,
+      city: null,
+      sector: null,
+      addressByGoogle: null,
+      contactPhoneNumber: null,
+      validated: null,
+      zipCode: null,
+      externalId: null,
+      createdAt: "2020-10-19T23:27:09.159Z",
+      updatedAt: "2020-10-19T23:27:09.159Z",
+      deleteAt: null,
+      id: 1
     }
   ],
-  billingDataDeleted: [
+  shippingAddressDeleted: [
     {
       "generatedMaps": [],
       "raw": {
@@ -82,24 +106,40 @@ export const mockBillingData = {
       deleteAt: null
     }
   ],
-  billindDataPaginated: [
+  shippingAddressPaginated: [
     {
       items: [
         {
           id: 1,
-          name: "test2",
-          address: "Quito",
-          default: 0,
-          document: "1719711176",
-          documentType: "CI",
-          nickname: "test",
-          additionalInfo: null,
-          email: "alex.pinaida@trade.ec",
-          phone: "0958963171",
+          nickname: null,
+          zone: null,
+          country: null,
+          city: null,
+          sector: null,
+          default: 1,
+          lat: "0.6700000000000",
+          lng: "0.8900000000000",
+          addressByGoogle: null,
+          mainStreet: "Heleodoro Ayaala Test",
+          number: "E9A",
+          secondaryStreet: "Pasaje S12F",
+          addressReference: "Arriba sector el triangulo",
+          livingPlace: {
+            id: 1,
+            fields: [
+              {
+                id: "test",
+                value: "test"
+              }
+            ]
+          },
+          contactPhoneNumber: null,
+          validated: null,
+          zipCode: null,
           externalId: null,
           userId: 1,
-          createdAt: "2020-10-18T20:57:17.528Z",
-          updatedAt: "2020-10-18T20:57:27.000Z",
+          createdAt: "2020-10-20T01:31:46.112Z",
+          updatedAt: "2020-10-20T01:32:56.000Z",
           deleteAt: null,
           user: {
             id: 1,
@@ -129,8 +169,8 @@ export const mockBillingData = {
             birthdate: "1994-05-01",
             registeredPlatform: "WEB",
             lastDateOfActivity: null,
-            createdAt: "2020-10-18T20:57:10.906Z",
-            updatedAt: "2020-10-18T20:57:10.906Z",
+            createdAt: "2020-10-20T01:31:37.073Z",
+            updatedAt: "2020-10-20T01:31:37.073Z",
             deleteAt: null
           }
         }
