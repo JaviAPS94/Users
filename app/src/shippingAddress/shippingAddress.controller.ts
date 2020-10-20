@@ -20,19 +20,6 @@ export class ShippingAddressController {
     }
   }
 
-  @Put(':id')
-  async update(@Param('id') id: number, @Body() updateShippingAddress: ShippingAddressDto) {
-    try {
-      return await this.shippingAddressService.updateShippingAddressById(id, updateShippingAddress);
-    }
-    catch (error) {
-      throw new HttpException({
-        status: HttpStatus.FORBIDDEN,
-        error: 'An error ocurred updating shipping address ' + error.message,
-      }, HttpStatus.FORBIDDEN);
-    }
-  }
-
   @Get()
   async findShippingAddress(
     @Query('page') page: number = 1,
@@ -62,6 +49,19 @@ export class ShippingAddressController {
       }, HttpStatus.NOT_FOUND);
     }
     return result;
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateShippingAddress: ShippingAddressDto) {
+    try {
+      return await this.shippingAddressService.updateShippingAddressById(id, updateShippingAddress);
+    }
+    catch (error) {
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'An error ocurred updating shipping address ' + error.message,
+      }, HttpStatus.FORBIDDEN);
+    }
   }
 
   @Delete(':id')
