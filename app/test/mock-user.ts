@@ -666,5 +666,121 @@ export const mockUser = {
       origin: null,
       lastDateOfActivity: null
     }
+  ],
+  userAndDocumentWithAdditionalInfo: [
+    {
+      userReturned: {
+        vendorId: 1,
+        externalId: '1234',
+        name: 'Alexis',
+        middlename: 'Javier',
+        lastname: 'Pinaida',
+        secondLastName: 'Simbaña',
+        phone:
+        {
+          number: '0958963172',
+          countryCode: '593',
+          countryIsoCode: 'EC'
+        },
+        document: '1719711176',
+        documentType: 'CI',
+        maritalStatus: 'MARRIED',
+        genre: 'MALE',
+        active: 1,
+        registeredPlatform: 'WEB',
+        birthdate: '1994-05-01',
+        country: { id: 1 },
+        uid: 'test3',
+        email: 'test@test.com',
+        account: 1,
+        accountId: 1,
+        code: 'ALEPINTEST3',
+        middleName: null,
+        secondLastname: null,
+        nickname: null,
+        normalizedName: null,
+        emailType: null,
+        additionalEmail: null,
+        additionalPhone: null,
+        facebookId: null,
+        whatsappId: null,
+        additionalInfo: {
+          referredCode: "test",
+          shoppingCart: "test",
+          totalCoupons: 1,
+          reasonDisabled: "test",
+          registered: true,
+          externalUpdateAt: "test"
+        },
+        origin: null,
+        lastDateOfActivity: null,
+        deleteAt: null,
+        id: 1
+      },
+      documentReturned: {
+        userId: 1,
+        document: '1719711176',
+        documentType: 'CI',
+        accountId: 1,
+        countryId: 1,
+        createdAt: "2020-10-24T02:34:37.665Z",
+        updatedAt: "2020-10-24T02:34:37.665Z",
+        deleteAt: null,
+        id: 1
+      }
+    }
+  ],
+  userResponseOldVersionTrasnform: [
+    {
+      idInt: 1,
+      birthdate: '1994-05-01',
+      referredCode: 'test',
+      shoppingCart: 'test',
+      totalCoupons: 1,
+      documentType: 'CI',
+      document: '1719711176',
+      reasonDisabled: 'test',
+      registered: true,
+      createdAt: null,
+      updatedAt: null,
+      externalUpdateAt: 'test',
+      shippingAddress: 'test',
+      billingAddress: 'test',
+      vendorId: 1,
+      externalId: '1234',
+      name: 'Alexis',
+      middlename: 'Javier',
+      lastname: 'Pinaida',
+      secondLastName: 'Simbaña',
+      phone: { number: '0958963172', countryCode: '593', countryIsoCode: 'EC' },
+      maritalStatus: 'MARRIED',
+      genre: 'MALE',
+      active: 1,
+      registeredPlatform: 'WEB',
+      country: { id: 1 },
+      uid: 'test3',
+      email: 'test@test.com',
+      account: 1,
+      code: 'ALEPINTEST3',
+      middleName: null,
+      secondLastname: null,
+      nickname: null,
+      normalizedName: null,
+      emailType: null,
+      additionalEmail: null,
+      additionalPhone: null,
+      facebookId: null,
+      whatsappId: null,
+      additionalInfo: {
+        referredCode: 'test',
+        shoppingCart: 'test',
+        totalCoupons: 1,
+        reasonDisabled: 'test',
+        registered: true,
+        externalUpdateAt: 'test'
+      },
+      origin: null,
+      lastDateOfActivity: null
+    }
   ]
 };
