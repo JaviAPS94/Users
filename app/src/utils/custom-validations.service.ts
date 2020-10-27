@@ -91,18 +91,17 @@ export const ConditionalDocumentType = (uid: string, countryId: string, validati
 export class ConditionalDocumentConstraint implements ValidatorConstraintInterface {
   async validate(value: any, args: ValidationArguments) {
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.validConditionalDocument(value, args, wraperService);
+    const uid = (args.object as any)[args.constraints[0]];
+    const country = (args.object as any)[args.constraints[1]];
+    return await this.validConditionalDocument(value, uid, country.id, wraperService);
   }
 
   defaultMessage(args: ValidationArguments) {
     return "The document is invalid";
   }
 
-  async validConditionalDocument(value: any, args: ValidationArguments, connection: EntityManagerWrapperService) {
-    const uid = (args.object as any)[args.constraints[0]];
-    const country = (args.object as any)[args.constraints[1]];
-    const currentDocument = await connection.findUserByUidAndCountry(uid, country.id);
-  
+  async validConditionalDocument(value: any, uid: string, countryId: number, connection: EntityManagerWrapperService) {
+    const currentDocument = await connection.findUserByUidAndCountry(uid, countryId);
     return (!_.isUndefined(currentDocument)) ? ((currentDocument.documentByUser[0].document === value) ? true : false)
       : true;
   }
@@ -111,19 +110,18 @@ export class ConditionalDocumentConstraint implements ValidatorConstraintInterfa
 @ValidatorConstraint({ name: 'ConditionalDocumentType' })
 export class ConditionalDocumentTypeConstraint implements ValidatorConstraintInterface {
   async validate(value: any, args: ValidationArguments) {
+    const uid = (args.object as any)[args.constraints[0]];
+    const country = (args.object as any)[args.constraints[1]];
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.validConditionalDocumentType(value, args, wraperService);
+    return await this.validConditionalDocumentType(value, uid, country.id, wraperService);
   }
 
   defaultMessage(args: ValidationArguments) {
     return "The document is invalid";
   }
 
-  async validConditionalDocumentType(value: any, args: ValidationArguments, connection: EntityManagerWrapperService) {
-    const uid = (args.object as any)[args.constraints[0]];
-    const country = (args.object as any)[args.constraints[1]];
-
-    const currentDocument = await connection.findUserByUidAndCountry(uid, country.id);
+  async validConditionalDocumentType(value: any, uid: string, countryId: number, connection: EntityManagerWrapperService) {
+    const currentDocument = await connection.findUserByUidAndCountry(uid, countryId);
 
     return (!_.isUndefined(currentDocument)) ? ((currentDocument.documentByUser[0].documentType === value) ? true : false)
       : true;
@@ -134,14 +132,14 @@ export class ConditionalDocumentTypeConstraint implements ValidatorConstraintInt
 export class BirthdateConstraint implements ValidatorConstraintInterface {
   async validate(value: any, args: ValidationArguments) {
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.validBirthDate(value, args, wraperService);
+    return await this.validBirthDate(value, wraperService);
   }
 
   defaultMessage(args: ValidationArguments) {
     return "The birthdate must be in a valid range";
   }
 
-  async validBirthDate(value: any, args: ValidationArguments, connection: EntityManagerWrapperService) {
+  async validBirthDate(value: any, connection: EntityManagerWrapperService) {
     // TODO custom validation
     // const account = (args.object as any)[args.constraints[0]];
     // const document = (args.object as any)[args.constraints[1]];
@@ -174,14 +172,14 @@ export class AlreadyExistPhoneNumberConstraint implements ValidatorConstraintInt
 export class DocumentTypesConstraint implements ValidatorConstraintInterface {
   async validate(value: any, args: ValidationArguments) {
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.validDocumentType(value, args, wraperService);
+    return await this.validDocumentType(value, wraperService);
   }
 
   defaultMessage(args: ValidationArguments) {
     return "The document type must be have a valid value";
   }
 
-  async validDocumentType(value: any, args: ValidationArguments, connection: EntityManagerWrapperService) {
+  async validDocumentType(value: any, connection: EntityManagerWrapperService) {
     // TODO custom validation
     //const account = (args.object as any)[args.constraints[0]];
     //const document = (args.object as any)[args.constraints[1]];
@@ -380,18 +378,18 @@ export class DocumentValidationConstraint implements ValidatorConstraintInterfac
 export class AlreadyExistDocumentConstraint implements ValidatorConstraintInterface {
   async validate(value: any, args: ValidationArguments) {
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.validateIfDocumentExistsInDb(value, args, wraperService);
+    const uid = (args.object as any)[args.constraints[0]];
+    const country = (args.object as any)[args.constraints[1]];
+    const accountId = (args.object as any)[args.constraints[2]];
+    return await this.validateIfDocumentExistsInDb(value, uid, country.id, accountId, wraperService);
   }
 
   defaultMessage(args: ValidationArguments) {
     return "The document already exist in the database";
   }
 
-  async validateIfDocumentExistsInDb(value: any, args: ValidationArguments, connection: EntityManagerWrapperService) {
-    const uid = (args.object as any)[args.constraints[0]];
-    const country = (args.object as any)[args.constraints[1]];
-    const accountId = (args.object as any)[args.constraints[2]];
-    const userByUidAndDocumentByCountry = await connection.findUserByUidAndDocumentByCountry(value, uid, country.id, accountId);
+  async validateIfDocumentExistsInDb(value: any, uid: string, countryId: number, accountId: number, connection: EntityManagerWrapperService) {
+    const userByUidAndDocumentByCountry = await connection.findUserByUidAndDocumentByCountry(value, uid, countryId, accountId);
     return (_.isUndefined(userByUidAndDocumentByCountry)) ? true : false;
   }
 }
