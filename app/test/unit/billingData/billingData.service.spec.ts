@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BillingDataService } from '../../../src/billingData/billingData.service';
 import { orderByEnum } from '../../../src/billingData/enums/order-by.enum';
+import { BillingDataTransformer } from '../../../src/billingData/transformers/billingData.transformer';
 import { BillingData } from '../../../src/entity/BillingData';
 import { UserModule } from '../../../src/users/user.module';
 import { UserService } from '../../../src/users/user.service';
@@ -14,7 +15,7 @@ describe('BillingDataService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [UserModule],
-      providers: [BillingDataService]
+      providers: [BillingDataService, BillingDataTransformer]
     }).compile();
 
     billingDataService = module.get<BillingDataService>(BillingDataService);
@@ -88,7 +89,7 @@ describe('BillingDataService', () => {
     }
   });
 
-  it('should update a plan in db', async () => {
+  it('should update a billing data in db', async () => {
     mockUpdateBillingDataSuccessful();
     const returnedBillingData = mockFindBillingDataById();
     const dataToUpdate = mockBillingData.billingData[0];
@@ -172,7 +173,7 @@ describe('BillingDataService', () => {
     }
   });
 
-  it('should soft delete a plan in db', async () => {
+  it('should soft delete a billing data in db', async () => {
     mockDeleteBillingDataSuccessful();
     const returnedBillingData = mockFindBillingDataById();
     const expectedResult = mockBillingData.billingDataDeleted[0];

@@ -1,6 +1,16 @@
-import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsObject, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { documentType } from '../enums/document-type.enum';
 
+class CountryDto {
+  @IsNotEmpty()
+  @IsNumber()
+  id: number;
+
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+}
 export class BillingDataDto {
   @IsNotEmpty()
   @IsString()
@@ -40,6 +50,11 @@ export class BillingDataDto {
   @IsOptional()
   @IsString()
   externalId?: string;
+
+  @ValidateNested()
+  @Type(() => CountryDto)
+  @IsNotEmpty()
+  country: CountryDto;
 
   @IsOptional()
   @IsObject()

@@ -9,8 +9,14 @@ export class LivingPlace {
   @Column({ nullable: false })
   name: string;
 
+  @Column("tinyint", { nullable: false })
+  active: number;
+
   @Column({ type: "json", nullable: false })
   fields: JSON;
+
+  @Column({ nullable: false })
+  countryId: number;
 
   @CreateDateColumn({ type: "timestamp", nullable: true, select: true })
   createdAt: Date;

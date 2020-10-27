@@ -20,7 +20,7 @@ export const uid = (req: Request, res: Response, next: Function) => {
 
   let account;
   if (req.headers.hasOwnProperty('account')) {
-    email = req.headers.email;
+    account = parseInt((req.headers.account).toString());
   }
 
   let clientVersion;

@@ -1,0 +1,141 @@
+import { Type } from 'class-transformer';
+import { IsBoolean, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
+import { Birthdate, ConditionalDocument, ConditionalDocumentType, DocumentTypes, DocumentValidation } from '../../../src/utils/custom-validations.service';
+import { genre } from '../enums/genre.enum';
+import { maritalStatus } from '../enums/marital-status.enum';
+
+class PhoneDto {
+  @IsNotEmpty()
+  @IsString()
+  @Length(6, 12)
+  number: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(2, 4)
+  countryCode: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(2, 4)
+  countryIsoCode: string;
+}
+
+class CountryDto {
+  @IsNotEmpty()
+  @IsNumber()
+  id: number;
+}
+
+export class UserUpdateDto {
+
+  @IsOptional()
+  @IsNumber()
+  vendorId: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  account: number;
+
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsOptional()
+  @IsString()
+  externalId: string;
+
+  @IsOptional()
+  @IsString()
+  middleName: string;
+
+  @IsOptional()
+  @IsString()
+  nickname?: string;
+
+  @IsNotEmpty()
+  @IsString()
+  lastname: string;
+
+  @IsOptional()
+  @IsString()
+  normalizedName?: string;
+
+  @IsOptional()
+  @IsString()
+  secondLastname: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+
+  @IsOptional()
+  @IsObject()
+  additionalEmail?: any;
+
+  @IsOptional()
+  @IsString()
+  emailType?: string;
+
+  @IsOptional()
+  @IsObject()
+  additionalPhone?: any;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PhoneDto)
+  phone: PhoneDto;
+
+  @IsOptional()
+  @IsNotEmpty()
+  origin: string;
+
+  @DocumentTypes('accountId')
+  @ConditionalDocumentType('uid', 'country')
+  documentType: string;
+
+  @Birthdate('accountId', 'document')
+  birthdate: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  @DocumentValidation('documentType')
+  @ConditionalDocument('uid', 'country')
+  document: string;
+
+  @IsOptional()
+  @IsEnum(maritalStatus)
+  maritalStatus: maritalStatus;
+
+  @IsOptional()
+  @IsObject()
+  facebookId?: any;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => CountryDto)
+  country: CountryDto;
+
+  @IsOptional()
+  @IsObject()
+  whatsappId?: any;
+
+  @IsOptional()
+  @IsBoolean()
+  active: boolean;
+
+  @IsEnum(genre)
+  genre: genre;
+
+  @IsOptional()
+  @IsObject()
+  additionalInfo?: any;
+
+  @IsOptional()
+  @IsDate()
+  lastDateOfActivity?: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  uid: string;
+}

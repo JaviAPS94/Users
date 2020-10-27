@@ -7,22 +7,22 @@ export class ShippingAddress {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   nickname: string;
 
-  @Column({ type: "json", nullable: false })
+  @Column({ type: "json", nullable: true })
   zone: JSON;
 
-  @Column({ type: "json", nullable: false })
+  @Column({ type: "json", nullable: true })
   country: JSON;
 
-  @Column({ type: "json", nullable: false })
+  @Column({ type: "json", nullable: true })
   city: JSON;
 
-  @Column({ type: "json", nullable: false })
+  @Column({ type: "json", nullable: true })
   sector: JSON;
 
-  @Column({ type: "tinyint", nullable: false })
+  @Column({ type: "tinyint", nullable: true })
   default: number;
 
   @Column({ type: "decimal", nullable: true, precision: 16, scale: 13 })
@@ -30,6 +30,9 @@ export class ShippingAddress {
 
   @Column({ type: "decimal", nullable: true, precision: 16, scale: 13 })
   lng: number;
+
+  @Column({ nullable: true })
+  addressByGoogle: string;
 
   @Column({ nullable: false })
   mainStreet: string;
@@ -41,15 +44,15 @@ export class ShippingAddress {
   secondaryStreet: string;
 
   @Column({ nullable: false })
-  addressReference: string;
+  reference: string;
 
-  @Column({ type: "json", nullable: true })
+  @Column({ type: "json", nullable: false })
   livingPlace: JSON;
 
   @Column({ nullable: true })
-  contactPhoneNumber: string;
+  numberContactAddress: string;
 
-  @Column({ type: "tinyint", nullable: false })
+  @Column({ type: "tinyint", nullable: true })
   validated: number;
 
   @Column({ nullable: true })
@@ -57,6 +60,9 @@ export class ShippingAddress {
 
   @Column({ nullable: true })
   externalId: string;
+
+  @Column({ nullable: false })
+  userId: number;
 
   @CreateDateColumn({ type: "timestamp", nullable: true, select: true })
   createdAt: Date;

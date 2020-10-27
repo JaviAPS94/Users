@@ -1,44 +1,69 @@
-import { IsString, IsNotEmpty, IsOptional, IsObject, IsEmail, IsEnum, IsBoolean, IsDate, IsNumber } from 'class-validator';
-import { documentType } from '../enums/document-type.enum';
+import { Type } from 'class-transformer';
+import { IsBoolean, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
+import { AlreadyExistDocument, AlreadyExistPhoneNumber, Birthdate, DocumentTypes, DocumentValidation } from '../../../src/utils/custom-validations.service';
 import { genre } from '../enums/genre.enum';
 import { maritalStatus } from '../enums/marital-status.enum';
+
+class PhoneDto {
+  @IsNotEmpty()
+  @IsString()
+  @Length(6, 12)
+  @AlreadyExistPhoneNumber()
+  number: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(2, 4)
+  countryCode: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Length(2, 4)
+  countryIsoCode: string;
+}
+
+class CountryDto {
+  @IsNotEmpty()
+  @IsNumber()
+  id: number;
+}
 
 export class UserDto {
   @IsNotEmpty()
   @IsString()
   uid: string;
-  
-  @IsNotEmpty()
-  @IsNumber()
-  accountId: number;
 
   @IsNotEmpty()
+  @IsNumber()
+  account: number;
+
+  @IsOptional()
   @IsNumber()
   vendorId: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   externalId: string;
 
   @IsNotEmpty()
   @IsString()
-  firstName: string;
+  name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   middleName: string;
 
   @IsNotEmpty()
   @IsString()
-  lastName: string;
-
-  @IsNotEmpty()
-  @IsString()
-  secondLastName: string;
+  lastname: string;
 
   @IsOptional()
   @IsString()
-  nickName?: string;
+  secondLastname: string;
+
+  @IsOptional()
+  @IsString()
+  nickname?: string;
 
   @IsOptional()
   @IsString()
@@ -49,12 +74,17 @@ export class UserDto {
   email: string;
 
   @IsOptional()
+  @IsString()
+  emailType?: string;
+
+  @IsOptional()
   @IsObject()
   additionalEmail?: any;
 
   @IsNotEmpty()
-  @IsString()
-  phone: string;
+  @ValidateNested()
+  @Type(() => PhoneDto)
+  phone: PhoneDto;
 
   @IsOptional()
   @IsObject()
@@ -62,11 +92,19 @@ export class UserDto {
 
   @IsNotEmpty()
   @IsString()
+  @DocumentValidation('documentType')
+  @AlreadyExistDocument('uid', 'country', 'account')
   document: string;
 
-  @IsEnum(documentType)
-  documentType: documentType;
+  @DocumentTypes('accountId')
+  documentType: string;
 
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => CountryDto)
+  country: CountryDto;
+
+  @IsOptional()
   @IsEnum(maritalStatus)
   maritalStatus: maritalStatus;
 
@@ -85,14 +123,16 @@ export class UserDto {
   @IsObject()
   additionalInfo?: any;
 
+  @IsOptional()
   @IsBoolean()
   active: boolean;
 
-  @IsNotEmpty()
+  @Birthdate('accountId', 'document')
   birthdate: Date;
 
+  @IsOptional()
   @IsNotEmpty()
-  registeredPlatform: string;
+  origin: string;
 
   @IsOptional()
   @IsDate()

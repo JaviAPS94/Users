@@ -1,10 +1,9 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
-import { documentType } from "../users/enums/document-type.enum";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { genre } from "../users/enums/genre.enum";
 import { maritalStatus } from "../users/enums/marital-status.enum";
 import { BillingData } from "./BillingData";
+import { Document } from "./Document";
 import { ShippingAddress } from "./ShippingAddress";
-import { UserHasProperties } from "./UserHasProperties";
 
 @Entity()
 export class User {
@@ -18,26 +17,26 @@ export class User {
   @Column({ nullable: false })
   accountId: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   vendorId: number;
 
   @Column({ nullable: true })
   externalId: string;
 
   @Column()
-  firstName: string;
+  name: string;
 
-  @Column()
+  @Column({ nullable: true })
   middleName: string;
 
   @Column()
-  lastName: string;
-
-  @Column()
-  secondLastName: string;
+  lastname: string;
 
   @Column({ nullable: true })
-  nickName: string;
+  secondLastname: string;
+
+  @Column({ nullable: true })
+  nickname: string;
 
   @Column({ nullable: true })
   normalizedName: string;
@@ -45,11 +44,14 @@ export class User {
   @Column()
   email: string;
 
+  @Column({ nullable: true })
+  emailType: string;
+
   @Column("json", { nullable: true })
   additionalEmail: any;
 
-  @Column()
-  phone: string;
+  @Column("json", { nullable: false })
+  phone: any;
 
   @Column("json", { nullable: true })
   additionalPhone: any;
@@ -57,16 +59,10 @@ export class User {
   @Column()
   code: string;
 
-  @Column()
-  document: string;
-
-  @Column("enum", { enum: documentType })
-  documentType: documentType;
-
-  @Column("enum", { enum: maritalStatus })
+  @Column("enum", { enum: maritalStatus, nullable: true })
   maritalStatus: maritalStatus;
 
-  @Column("enum", { enum: genre })
+  @Column("enum", { enum: genre, nullable: true })
   genre: genre;
 
   @Column("json", { nullable: true })
@@ -78,14 +74,14 @@ export class User {
   @Column("json", { nullable: true })
   additionalInfo: any;
 
-  @Column("tinyint")
+  @Column("tinyint", { default: 1 })
   active: number;
 
   @Column({ type: "date", nullable: true })
   birthdate: Date;
 
   @Column({ nullable: true })
-  registeredPlatform: string;
+  origin: string;
 
   @Column({ type: "timestamp", nullable: true })
   lastDateOfActivity: Date;
@@ -105,6 +101,6 @@ export class User {
   @OneToMany(type => ShippingAddress, shippingAddressByUser => shippingAddressByUser.user)
   shippingAddressByUser: ShippingAddress[];
 
-  @OneToMany(type => UserHasProperties, userHasProperties => userHasProperties.user)
-  userHasProperties: UserHasProperties[];
+  @OneToMany(type => Document, documents => documents.user)
+  documentByUser: Document[];
 }

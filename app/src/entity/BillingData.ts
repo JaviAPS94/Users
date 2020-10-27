@@ -27,6 +27,9 @@ export class BillingData {
   nickname: string;
 
   @Column({ type: "json", nullable: true })
+  country: JSON;
+
+  @Column({ type: "json", nullable: true })
   additionalInfo: JSON;
 
   @Column({ nullable: true })

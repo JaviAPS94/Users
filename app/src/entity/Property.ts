@@ -1,5 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { UserHasProperties } from "./UserHasProperties";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class Property {
@@ -13,8 +12,14 @@ export class Property {
   @Column({ nullable: false })
   accountId: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   vendorId: number;
+
+  @Column({ nullable: false })
+  countryId: number;
+
+  @Column({ nullable: false })
+  entity: string;
 
   @Column("json", { nullable: true })
   rules: any;
@@ -27,7 +32,4 @@ export class Property {
 
   @DeleteDateColumn({ type: "timestamp", nullable: true, select: true })
   deleteAt: Date;
-
-  @OneToMany(type => UserHasProperties, userHasProperties => userHasProperties.property)
-  userHasProperties: UserHasProperties[];
 }

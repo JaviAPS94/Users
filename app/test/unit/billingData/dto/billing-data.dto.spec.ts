@@ -20,7 +20,11 @@ describe('BillingDataDto', () => {
       phone: "0958963171",
       email: "alex.pinaida@trade.ec",
       uid: "test",
-      default: true
+      default: true,
+      country: {
+        id: 1,
+        name: "Ecuador"
+      }
     };
     expect(await validationPipe.transform(valueObject, { type: "body", metatype: BillingDataDto })).toBe(valueObject);
   });
