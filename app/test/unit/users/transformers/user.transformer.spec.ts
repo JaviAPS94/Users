@@ -20,5 +20,12 @@ describe('UserTransformer', () => {
       const response = userTransformer.transformUserAndDocument({ userReturned: user, documentReturned: document }, "test", "test");
       expect(response).toEqual(expectedResult);
     });
+
+    it ('should return user generic transformed', async () => {
+      const user = new User();
+      Object.assign(user, mockUser.entityUsersWithDocumentForTransformer[0]);
+      const response = userTransformer.transformGenericUser(user);
+      expect(response).toEqual(mockUser.userGenericTransformResponse[0]);
+    })
   });
 });

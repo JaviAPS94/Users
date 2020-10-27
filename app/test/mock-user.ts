@@ -782,5 +782,75 @@ export const mockUser = {
       origin: null,
       lastDateOfActivity: null
     }
+  ],
+  entityUsersWithDocumentForTransformer: [
+    {
+      id: 1,
+      uid: 'test3',
+      accountId: 1,
+      vendorId: 1,
+      externalId: '1234',
+      name: 'Alexis',
+      middleName: 'Javier',
+      lastname: 'Pinaida',
+      secondLastname: 'Simbaña',
+      nickname: null,
+      normalizedName: null,
+      email: 'test@test.com',
+      emailType: null,
+      additionalEmail: null,
+      phone: { number: "0958963172", countryCode: "593", countryIsoCode: "EC" },
+      additionalPhone: null,
+      code: 'ALEPIN132',
+      document: '1719711176',
+      documentType: 'CI',
+      maritalStatus: 'MARRIED',
+      genre: 'MALE',
+      facebookId: null,
+      whatsappId: null,
+      additionalInfo: {
+        referredCode: "test",
+        shoppingCart: "test",
+        totalCoupons: 1,
+        reasonDisabled: "test",
+        registered: true,
+        externalUpdateAt: "test"
+      },
+      active: 1,
+      birthdate: '1994-05-01',
+      origin: null,
+      lastDateOfActivity: null,
+      createdAt: "2020-10-16T20:30:55.578Z",
+      updatedAt: "2020-10-16T20:30:55.000Z",
+      deleteAt: null,
+      documentByUser:
+        [{
+          id: 1,
+          document: '1719711176',
+          documentType: 'CI',
+          accountId: 1,
+          countryId: 1,
+          userId: 1,
+          createdAt: "2020-10-26T02:57:43.655Z",
+          updatedAt: "2020-10-26T02:57:43.655Z",
+          deleteAt: null
+        }]
+    }
+  ],
+  userGenericTransformResponse: [
+    {
+      idInt: 1,
+      birthdate: '1994-05-01',
+      referredCode: 'test',
+      shoppingCart: 'test',
+      totalCoupons: 1,
+      documentType: 'CI',
+      document: '1719711176',
+      reasonDisabled: 'test',
+      registered: true,
+      createdAt: '2020-10-16 20:30:55',
+      updatedAt: '2020-10-16 20:30:55',
+      externalUpdateAt: 'test'
+    }
   ]
 };
