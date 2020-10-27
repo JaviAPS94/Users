@@ -28,17 +28,14 @@ class CountryDto {
 }
 
 export class UserUpdateDto {
-  @IsNotEmpty()
-  @IsNumber()
-  account: number;
 
   @IsOptional()
   @IsNumber()
   vendorId: number;
 
-  @IsOptional()
-  @IsString()
-  externalId: string;
+  @IsNotEmpty()
+  @IsNumber()
+  account: number;
 
   @IsNotEmpty()
   @IsString()
@@ -46,7 +43,15 @@ export class UserUpdateDto {
 
   @IsOptional()
   @IsString()
+  externalId: string;
+
+  @IsOptional()
+  @IsString()
   middleName: string;
+
+  @IsOptional()
+  @IsString()
+  nickname?: string;
 
   @IsNotEmpty()
   @IsString()
@@ -54,19 +59,19 @@ export class UserUpdateDto {
 
   @IsOptional()
   @IsString()
-  secondLastname: string;
-
-  @IsOptional()
-  @IsString()
-  nickname?: string;
-
-  @IsOptional()
-  @IsString()
   normalizedName?: string;
+
+  @IsOptional()
+  @IsString()
+  secondLastname: string;
 
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @IsOptional()
+  @IsObject()
+  additionalEmail?: any;
 
   @IsOptional()
   @IsString()
@@ -74,7 +79,7 @@ export class UserUpdateDto {
 
   @IsOptional()
   @IsObject()
-  additionalEmail?: any;
+  additionalPhone?: any;
 
   @IsOptional()
   @ValidateNested()
@@ -82,8 +87,15 @@ export class UserUpdateDto {
   phone: PhoneDto;
 
   @IsOptional()
-  @IsObject()
-  additionalPhone?: any;
+  @IsNotEmpty()
+  origin: string;
+
+  @DocumentTypes('accountId')
+  @ConditionalDocumentType('uid', 'country')
+  documentType: string;
+
+  @Birthdate('accountId', 'document')
+  birthdate: Date;
 
   @IsNotEmpty()
   @IsString()
@@ -91,9 +103,13 @@ export class UserUpdateDto {
   @ConditionalDocument('uid', 'country')
   document: string;
 
-  @DocumentTypes('accountId')
-  @ConditionalDocumentType('uid', 'country')
-  documentType: string;
+  @IsOptional()
+  @IsEnum(maritalStatus)
+  maritalStatus: maritalStatus;
+
+  @IsOptional()
+  @IsObject()
+  facebookId?: any;
 
   @IsNotEmpty()
   @ValidateNested()
@@ -101,34 +117,19 @@ export class UserUpdateDto {
   country: CountryDto;
 
   @IsOptional()
-  @IsEnum(maritalStatus)
-  maritalStatus: maritalStatus;
+  @IsObject()
+  whatsappId?: any;
+
+  @IsOptional()
+  @IsBoolean()
+  active: boolean;
 
   @IsEnum(genre)
   genre: genre;
 
   @IsOptional()
   @IsObject()
-  facebookId?: any;
-
-  @IsOptional()
-  @IsObject()
-  whatsappId?: any;
-
-  @IsOptional()
-  @IsObject()
   additionalInfo?: any;
-
-  @IsOptional()
-  @IsBoolean()
-  active: boolean;
-
-  @Birthdate('accountId', 'document')
-  birthdate: Date;
-
-  @IsOptional()
-  @IsNotEmpty()
-  origin: string;
 
   @IsOptional()
   @IsDate()
