@@ -19,7 +19,7 @@ describe('ShippingAddressDto', () => {
       mainStreet: "Heleodoro Ayaala",
       number: "E9A",
       secondaryStreet: "Pasaje S12F",
-      addressReference: "Arriba sector el triangulo",
+      reference: "Arriba sector el triangulo",
       livingPlace: {
         id: 1,
         fields: [

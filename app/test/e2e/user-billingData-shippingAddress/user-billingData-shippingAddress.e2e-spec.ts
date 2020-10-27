@@ -57,6 +57,13 @@ describe('User AppController (e2e)', () => {
     return result;
   });
 
+  it('Api Users (GET)', () => {
+    const result = request(app.getHttpServer())
+      .get('/api/users')
+      .expect(HttpStatus.NOT_FOUND);
+    return result;
+  });
+
   it('Api User (POST)', () => {
     const result = request(app.getHttpServer())
       .post('/api/users')

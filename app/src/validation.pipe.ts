@@ -13,7 +13,12 @@ export class ValidationPipe implements PipeTransform<any> {
     const responseErrors = errors.map(error => {
       return {
         field: error.property,
-        constraints: error.constraints
+        constraints: (error.children.length > 0) ? error.children.map(childrenError => {
+          return {
+            field: childrenError.property,
+            constraints: childrenError.constraints
+          }
+        }) : error.constraints
       }
     })
     if (responseErrors.length > 0) {

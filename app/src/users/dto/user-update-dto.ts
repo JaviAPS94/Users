@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
-import { AlreadyExistDocument, AlreadyExistPhoneNumber, Birthdate, DocumentTypes, DocumentValidation } from '../../../src/utils/custom-validations.service';
+import { Birthdate, ConditionalDocument, ConditionalDocumentType, DocumentTypes, DocumentValidation } from '../../../src/utils/custom-validations.service';
 import { genre } from '../enums/genre.enum';
 import { maritalStatus } from '../enums/marital-status.enum';
 
@@ -8,7 +8,6 @@ class PhoneDto {
   @IsNotEmpty()
   @IsString()
   @Length(6, 12)
-  @AlreadyExistPhoneNumber()
   number: string;
 
   @IsNotEmpty()
@@ -28,7 +27,7 @@ class CountryDto {
   id: number;
 }
 
-export class UserDto {
+export class UserUpdateDto {
   @IsNotEmpty()
   @IsString()
   uid: string;
@@ -81,7 +80,7 @@ export class UserDto {
   @IsObject()
   additionalEmail?: any;
 
-  @IsNotEmpty()
+  @IsOptional()
   @ValidateNested()
   @Type(() => PhoneDto)
   phone: PhoneDto;
@@ -93,10 +92,11 @@ export class UserDto {
   @IsNotEmpty()
   @IsString()
   @DocumentValidation('documentType')
-  @AlreadyExistDocument('uid', 'country', 'account')
+  @ConditionalDocument('uid', 'country')
   document: string;
 
   @DocumentTypes('accountId')
+  @ConditionalDocumentType('uid', 'country')
   documentType: string;
 
   @IsNotEmpty()

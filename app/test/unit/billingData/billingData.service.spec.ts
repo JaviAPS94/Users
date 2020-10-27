@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import BillingDataTransformer from '../../../src/billingData/transformers/billingData.transformer';
 import { BillingDataService } from '../../../src/billingData/billingData.service';
 import { orderByEnum } from '../../../src/billingData/enums/order-by.enum';
 import { BillingData } from '../../../src/entity/BillingData';
@@ -14,7 +15,7 @@ describe('BillingDataService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [UserModule],
-      providers: [BillingDataService]
+      providers: [BillingDataService, BillingDataTransformer]
     }).compile();
 
     billingDataService = module.get<BillingDataService>(BillingDataService);

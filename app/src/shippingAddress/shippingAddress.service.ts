@@ -66,14 +66,14 @@ export class ShippingAddressService {
     }
   }
 
-  public async getShippingAddress(uid: string, orderBy: orderByEnum, sortBy: string, options: IPaginationOptions): Promise<Pagination<ShippingAddress>> {
+  public async getShippingAddress(uid: string, orderBy: orderByEnum, sortBy: string, options: IPaginationOptions, countryId?: string): Promise<Pagination<ShippingAddress>> {
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.findShippingAddress(uid, orderBy, sortBy, options, wraperService);
+    return await this.findShippingAddress(uid, orderBy, sortBy, options, wraperService, countryId);
   }
 
-  public async findShippingAddress(uid: string, orderBy: orderByEnum, sortBy: string, options: IPaginationOptions, connection: EntityManagerWrapperService) {
+  public async findShippingAddress(uid: string, orderBy: orderByEnum, sortBy: string, options: IPaginationOptions, connection: EntityManagerWrapperService, countryId?: string) {
     try {
-      return await connection.findShippingAddress(uid, orderBy, sortBy, options);
+      return await connection.findShippingAddress(uid, orderBy, sortBy, options, countryId);
     }
     catch (error) {
       throw new Error("ShippingAddress Find error: " + error.message);

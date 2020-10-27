@@ -44,13 +44,13 @@ export class ShippingAddress {
   secondaryStreet: string;
 
   @Column({ nullable: false })
-  addressReference: string;
+  reference: string;
 
   @Column({ type: "json", nullable: false })
   livingPlace: JSON;
 
   @Column({ nullable: true })
-  contactPhoneNumber: string;
+  numberContactAddress: string;
 
   @Column({ type: "tinyint", nullable: true })
   validated: number;

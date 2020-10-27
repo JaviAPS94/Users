@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import ShippingAddressTransformer from '../../../src/shippingAddress/transformers/shippingAddress.transformer';
 import { orderByEnum } from '../../../src/billingData/enums/order-by.enum';
 import { ShippingAddress } from '../../../src/entity/ShippingAddress';
 import { ShippingAddressService } from '../../../src/shippingAddress/shippingAddress.service';
@@ -15,7 +16,7 @@ describe('ShippingAddressService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [UserModule],
-      providers: [ShippingAddressService]
+      providers: [ShippingAddressService, ShippingAddressTransformer]
     }).compile();
 
     shippingAddressService = module.get<ShippingAddressService>(ShippingAddressService);

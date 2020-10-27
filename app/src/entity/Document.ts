@@ -1,28 +1,27 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { documentType } from "../users/enums/document-type.enum";
+import { User } from "./User";
 
 @Entity()
-export class Property {
+export class Document {
 
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  document: string;
+
+  @Column("enum", { enum: documentType })
+  documentType: documentType;
 
   @Column({ nullable: false })
   accountId: number;
-
-  @Column({ nullable: true })
-  vendorId: number;
 
   @Column({ nullable: false })
   countryId: number;
 
   @Column({ nullable: false })
-  entity: string;
-
-  @Column("json", { nullable: true })
-  rules: any;
+  userId: number;
 
   @CreateDateColumn({ type: "timestamp", nullable: true, select: true })
   createdAt: Date;
@@ -32,4 +31,7 @@ export class Property {
 
   @DeleteDateColumn({ type: "timestamp", nullable: true, select: true })
   deleteAt: Date;
+
+  @ManyToOne(type => User, user => user.documentByUser)
+  user: User;
 }

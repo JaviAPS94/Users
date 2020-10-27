@@ -11,7 +11,11 @@ export const mockBillingData = {
       phone: "0958963171",
       email: "alex.pinaida@trade.ec",
       default: true,
-      uid: "test"
+      uid: "test",
+      country: {
+        id: 1,
+        name: "Ecuador"
+      }
     }
   ],
   billingDataEntity: [
@@ -86,10 +90,10 @@ export const mockBillingData = {
     {
       items: [
         {
-          id: 1,
-          name: "test2",
+          id: 3,
+          name: "test",
           address: "Quito",
-          default: 0,
+          default: 1,
           document: "1719711176",
           documentType: "CI",
           nickname: "test",
@@ -98,6 +102,10 @@ export const mockBillingData = {
           phone: "0958963171",
           externalId: null,
           userId: 1,
+          country: {
+            id: 1,
+            name: "Ecuador"
+          },
           createdAt: "2020-10-18T20:57:17.528Z",
           updatedAt: "2020-10-18T20:57:27.000Z",
           deleteAt: null,
@@ -136,7 +144,7 @@ export const mockBillingData = {
         }
       ],
       meta: {
-        totalItems: 1,
+        totalItems: 2,
         itemCount: 1,
         itemsPerPage: "15",
         totalPages: 1,
@@ -148,6 +156,53 @@ export const mockBillingData = {
         next: "",
         last: "http://host?page=1&limit=15"
       }
+    }
+  ],
+  billingDataPaginatedOldVersion: [
+    {
+      data: [
+        {
+          idInt: 3,
+          id: 3,
+          name: "test",
+          address: "Quito",
+          default: 1,
+          document: "1719711176",
+          documentType: "CI",
+          nickname: "test",
+          country: {
+            id: 1,
+            name: "Ecuador"
+          },
+          additionalInfo: null,
+          email: "alex.pinaida@trade.ec",
+          phone: "0958963171",
+          externalId: null,
+          userId: 1
+        }
+      ],
+      total: 2,
+      size: 15,
+      page: 1,
+      sortBy: "name",
+      orderBy: "ASC"
+    }
+  ],
+  billingDataResponseOldVersion: [
+    {
+      id: 1,
+      idInt: 1,
+      name: 'test',
+      address: 'Quito',
+      default: 1,
+      document: '1719711176',
+      documentType: 'CI',
+      nickname: 'test',
+      additionalInfo: null,
+      email: 'alex.pinaida@trade.ec',
+      phone: '0958963171',
+      externalId: null,
+      userId: 1
     }
   ]
 };

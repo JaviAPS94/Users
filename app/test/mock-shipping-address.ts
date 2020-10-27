@@ -9,7 +9,7 @@ export const mockShippingAddress = {
       mainStreet: "Heleodoro Ayaala",
       number: "E9A",
       secondaryStreet: "Pasaje S12F",
-      addressReference: "Arriba sector el triangulo",
+      reference: "Arriba sector el triangulo",
       livingPlace: {
         id: 1,
         fields: [
@@ -123,7 +123,7 @@ export const mockShippingAddress = {
           mainStreet: "Heleodoro Ayaala Test",
           number: "E9A",
           secondaryStreet: "Pasaje S12F",
-          addressReference: "Arriba sector el triangulo",
+          reference: "Arriba sector el triangulo",
           livingPlace: {
             id: 1,
             fields: [
@@ -133,7 +133,7 @@ export const mockShippingAddress = {
               }
             ]
           },
-          contactPhoneNumber: null,
+          numberContactAddress: null,
           validated: null,
           zipCode: null,
           externalId: null,
@@ -188,6 +188,82 @@ export const mockShippingAddress = {
         next: "",
         last: "http://host?page=1&limit=15"
       }
+    }
+  ],
+  shippingAddressResponseOldVersion: [
+    {
+      default: true,
+      lat: 0.67,
+      lng: 0.89,
+      mainStreet: "Heleodoro Ayaala",
+      number: "E9A",
+      secondaryStreet: "Pasaje S12F",
+      addressReference: "Arriba sector el triangulo",
+      livingPlace: {
+        id: 1,
+        fields: [
+          {
+            id: "test",
+            value: "test"
+          }
+        ]
+      },
+      uid: "132",
+      userId: 1,
+      nickname: null,
+      zone: null,
+      country: null,
+      city: null,
+      sector: null,
+      addressByGoogle: null,
+      contactPhoneNumber: null,
+      validated: null,
+      zipCode: null,
+      externalId: null,
+      externalUpdateAt: "2020-10-19T23:27:09.159Z",
+      id: 1
+    }
+  ],
+  shippingAddressPaginatedOldVersion: [
+    {
+      data: [
+        {
+          id: 1,
+          nickname: null,
+          zone: null,
+          country: null,
+          city: null,
+          sector: null,
+          default: 1,
+          lat: "0.6700000000000",
+          lng: "0.8900000000000",
+          addressByGoogle: null,
+          mainStreet: "Heleodoro Ayaala Test",
+          number: "E9A",
+          secondaryStreet: "Pasaje S12F",
+          reference: "Arriba sector el triangulo",
+          livingPlace: {
+            id: 1,
+            fields: [
+              {
+                id: "test",
+                value: "test"
+              }
+            ]
+          },
+          numberContactAddress: null,
+          externalUpdateAt: "2020-10-20T01:32:56.000Z",
+          validated: null,
+          zipCode: null,
+          externalId: null,
+          userId: 1
+        }
+      ],
+      total: 1,
+      size: 15,
+      page: 1,
+      sortBy: "name",
+      orderBy: "ASC"
     }
   ]
 };

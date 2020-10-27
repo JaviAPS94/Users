@@ -1,33 +1,80 @@
 import { Injectable } from "@nestjs/common";
+import * as _ from "lodash";
+import { getConnection, getManager, QueryRunner } from "typeorm";
+import { Document } from "../../src/entity/Document";
 import { User } from "../../src/entity/User";
 import { EntityManagerWrapperService } from "../../src/utils/entity-manager-wrapper.service";
-import { getManager } from "typeorm";
+import { DynamicFilterDto } from "./dto/dynamic-filter.dto";
+import { FindUserBillingShippingDto } from './dto/find-user-billing-shipping.dto';
 import { UserDto } from "./dto/user.dto";
-import * as _ from "lodash";
+import { documentType } from "./enums/document-type.enum";
 
 @Injectable()
 export class UserService {
+
   async saveUser(user: UserDto) {
-    const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.create(user, wraperService);
+    const connection = getConnection().createQueryRunner();
+    return await this.create(user, connection);
   }
 
-  async create(user: UserDto, connection: EntityManagerWrapperService) {
+  async create(user: UserDto, queryRunner: QueryRunner) {
     const userToCreate = new User();
+    const documentToCreate = new Document();
+
     Object.assign(userToCreate, user);
+    userToCreate.accountId = user.account;
+
+    // establish real database connection using our new query runner
+    await queryRunner.connect();
+
+    // lets now open a new transaction:
+    await queryRunner.startTransaction();
+
     try {
-      userToCreate.code = await this.generateUserCode(user.firstName, user.lastName, user.uid);
-      const userReturned = await connection.save(userToCreate);
-      return userReturned;
-    }
-    catch (error) {
+      userToCreate.code = await this.generateUserCode(user.name, user.lastname, user.uid);
+      // execute some operations on this transaction
+      const userReturned = await queryRunner.manager.save(userToCreate);
+
+      documentToCreate.userId = userReturned.id;
+      documentToCreate.document = user.document;
+      documentToCreate.documentType = documentType[user.documentType];
+      documentToCreate.accountId = user.account;
+      documentToCreate.countryId = user.country.id;
+
+      const documentReturned = await queryRunner.manager.save(documentToCreate);
+
+      // commit transaction now
+      await queryRunner.commitTransaction();
+
+      return { userReturned, documentReturned };
+    } catch (error) {
+      // since we have errors let's rollback changes we made
+      await queryRunner.rollbackTransaction();
       throw new Error('User Database Error: ' + error.message);
+    } finally {
+      // you need to release query runner which is manually created
+      await queryRunner.release();
     }
   }
 
   public async updateUser(userDto: UserDto) {
+    const connection = getConnection().createQueryRunner();
+    return await this.update(userDto, connection);
+  }
+
+  public async getUser(uid: string, account: number, countryId: number) {
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.update(userDto, wraperService);
+    return await this.findUserByUidAndCountry(uid, countryId, wraperService);
+  }
+
+  public async findUserByUidAndCountry(uid: string, countryId: number, connection: EntityManagerWrapperService) {
+    try {
+      return await connection.findUserByUidAndCountry(uid, countryId);
+    }
+    catch (error) {
+      console.log("ERROR: UserByUidAndCountry Find error: " + error.message);
+      throw new Error("UserByUidAndCountry Find error: " + error.message);
+    }
   }
 
   public async findUserByUid(uid: string, connection: EntityManagerWrapperService) {
@@ -42,19 +89,91 @@ export class UserService {
     }
   }
 
-  public async update(userDto: UserDto, connection: EntityManagerWrapperService) {
+  public async update(userDto: UserDto, queryRunner: QueryRunner) {
+    // establish real database connection using our new query runner
+    await queryRunner.connect();
+
+    // lets now open a new transaction:
+    await queryRunner.startTransaction();
+
     try {
-      const userToUpdate = await this.findUserByUid(userDto.uid, connection);
-      if (_.isEmpty(userToUpdate)) {
-        console.log('ERROR: User needs a VALID uid');
-        throw new Error('User needs a VALID uid');
-      }
-      Object.assign(userToUpdate, userDto);
-      return await connection.save(userToUpdate);
+      // execute some operations on this transaction
+      const user = await queryRunner.manager.findOne(User, {
+        where: { uid: `${userDto.uid}` }
+      });
+
+      Object.assign(user, userDto);
+      const userReturned = await queryRunner.manager.save(user);
+
+      const documentToUpdate = await queryRunner.manager.findOne(Document, {
+        where: { document: `${userDto.document}`, countryId: `${userDto.document}` }
+      }) ?? new Document();
+
+      documentToUpdate.userId = userReturned.id;
+      documentToUpdate.document = userDto.document;
+      documentToUpdate.documentType = documentType[userDto.documentType];
+      documentToUpdate.accountId = userDto.account;
+      documentToUpdate.countryId = userDto.country.id;
+
+      const documentReturned = await queryRunner.manager.save(documentToUpdate);
+
+      // commit transaction now
+      await queryRunner.commitTransaction();
+
+      return { userReturned, documentReturned };
+    } catch (error) {
+      // since we have errors let's rollback changes we made
+      await queryRunner.rollbackTransaction();
+      throw new Error('User Database Error: ' + error.message);
+    } finally {
+      // you need to release query runner which is manually created
+      await queryRunner.release();
+    }
+  }
+
+  public async getUsersByDynamicFilter(dynamicFilterDto: DynamicFilterDto) {
+    const wraperService = new EntityManagerWrapperService(getManager());
+    return await this.findUserByDynamicFilter(dynamicFilterDto, wraperService);
+  }
+
+  public async findUserByDynamicFilter(dynamicFilterDto: DynamicFilterDto, connection: EntityManagerWrapperService) {
+    try {
+      return await connection.findUserByDynamicFilter(dynamicFilterDto);
     }
     catch (error) {
-      console.log("ERROR: Update User Database Error: " + error.message);
-      throw new Error("Update User Database Error: " + error.message);
+      console.log("ERROR: UserByDynamicFilter Find error: " + error.message);
+      throw new Error("UserByDynamicFilter Find error: " + error.message);
+    }
+  }
+
+  public async getUserWithBillingAndShipping(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto) {
+    const wraperService = new EntityManagerWrapperService(getManager());
+    return await this.findUserByUidWithShippingAndBilling(uid, findUserBillingShippingDto, wraperService);
+  }
+
+  public async findUserByUidWithShippingAndBilling(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto, connection: EntityManagerWrapperService) {
+    try {
+      const billingData = await connection.findBillingDataById({
+        where: { id: `${findUserBillingShippingDto.billing}` }
+      });
+      if (_.isEmpty(billingData)) {
+        throw new Error('FindUserByUidAndDocumentByCountry needs a VALID billing id');
+      }
+      const shippingAddress = await connection.findShippingAddressById({
+        where: { id: `${findUserBillingShippingDto.shipping}` }
+      });
+      if (_.isEmpty(shippingAddress)) {
+        throw new Error('FindUserByUidAndDocumentByCountry needs a VALID shipping address id');
+      }
+      const user = await connection.findUserByUidWithShippingAndBilling(uid, findUserBillingShippingDto);
+      if (_.isEmpty(user)) {
+        throw new Error('FindUserByUidAndDocumentByCountry needs a VALID uid');
+      }
+      return user;
+    }
+    catch (error) {
+      console.log("ERROR: UserByUidWithBillingAndShipping Find error: " + error.message);
+      throw new Error("UserByUidWithBillingAndShipping Find error: " + error.message);
     }
   }
 

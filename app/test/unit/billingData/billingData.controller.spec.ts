@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import BillingDataTransformer from '../../../src/billingData/transformers/billingData.transformer';
 import { BillingDataController } from '../../../src/billingData/billingData.controller';
 import { BillingDataService } from '../../../src/billingData/billingData.service';
 import { BillingDataDto } from '../../../src/billingData/dto/billing-data.dto';
@@ -14,7 +15,7 @@ describe('BillingData Controller', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [UserModule],
       controllers: [BillingDataController],
-      providers: [BillingDataService]
+      providers: [BillingDataService, BillingDataTransformer]
     }).compile();
     billingDataController = module.get<BillingDataController>(BillingDataController);
   });
@@ -27,7 +28,7 @@ describe('BillingData Controller', () => {
 
     const returnedValue = await billingDataController.create(billingDataDto);
     expect(createBillingData).toHaveBeenCalled();
-    expect(returnedValue).toEqual(mockBillingData.billingDataEntity[0]);
+    expect(returnedValue).toEqual(mockBillingData.billingDataResponseOldVersion[0]);
   });
 
   it('POST should return 403 when data to post is invalid', async () => {
@@ -53,14 +54,15 @@ describe('BillingData Controller', () => {
   it('GET should return 200 when get billing data is OK', async () => {
     const getBillingData = BillingDataService.prototype.getBillingData = jest.fn();
     getBillingData.mockReturnValue(mockBillingData.billindDataPaginated[0]);
-    const expectedResult = mockBillingData.billindDataPaginated[0];
+    const expectedResult = mockBillingData.billingDataPaginatedOldVersion[0];
     const uid = '132';
     const page = 1;
     const size = 15;
     const orderBy = orderByEnum.ASC;
     const sortBy = "name";
+    const countryId = "1";
 
-    const returnedValue = await billingDataController.findBillingData(page, size, orderBy, sortBy, uid);
+    const returnedValue = await billingDataController.findBillingData(page, size, countryId, orderBy, sortBy, uid);
     expect(getBillingData).toHaveBeenCalled();
     expect(returnedValue).toEqual(expectedResult);
   });
@@ -77,9 +79,77 @@ describe('BillingData Controller', () => {
     const size = 15;
     const orderBy = orderByEnum.ASC;
     const sortBy = "name";
+    const countryId = "1";
 
     try {
-      await billingDataController.findBillingData(page, size, orderBy, sortBy, uid);
+      await billingDataController.findBillingData(page, size, countryId, orderBy, sortBy, uid);
+    } catch (error) {
+      expect(error).toBeInstanceOf(HttpException);
+      expect(error.response.error).toContain('An error ocurred retrieving the data');
+      expect(error.status).toBe(HttpStatus.FORBIDDEN);
+    }
+  });
+
+  it('GET should return 404 when it cannnot retrieve data', async () => {
+    const getBillingData = BillingDataService.prototype.getBillingData = jest.fn();
+    getBillingData.mockReturnValue({
+      items: [],
+      meta: {
+        totalItems: 1,
+        itemsPerPage: 1,
+        currentPage: 1
+      }
+    });
+    expect.assertions(3);
+
+    const uid = '132';
+    const page = 1;
+    const size = 15;
+    const orderBy = orderByEnum.ASC;
+    const sortBy = "name";
+    const countryId = "1";
+
+    try {
+      await billingDataController.findBillingData(page, size, countryId, orderBy, sortBy, uid);
+    } catch (error) {
+      expect(error).toBeInstanceOf(HttpException);
+      expect(error.response.error).toContain('No billing data for user with uid:');
+      expect(error.status).toBe(HttpStatus.NOT_FOUND);
+    }
+  });
+
+  it('GET should return 200 when get billing data is OK', async () => {
+    const getBillingData = BillingDataService.prototype.getBillingData = jest.fn();
+    getBillingData.mockReturnValue(mockBillingData.billindDataPaginated[0]);
+    const expectedResult = mockBillingData.billindDataPaginated[0];
+    const uid = '132';
+    const page = 1;
+    const size = 15;
+    const orderBy = orderByEnum.ASC;
+    const sortBy = "name";
+    const countryId = "1";
+
+    const returnedValue = await billingDataController.findBillingDataPaginated(page, size, countryId, orderBy, sortBy, uid);
+    expect(getBillingData).toHaveBeenCalled();
+    expect(returnedValue).toEqual(expectedResult);
+  });
+
+  it('GET should return 403 when it cannnot retrieve data', async () => {
+    const getBillingData = BillingDataService.prototype.getBillingData = jest.fn();
+    getBillingData.mockImplementation(() => {
+      throw new Error('error');
+    });
+    expect.assertions(3);
+
+    const uid = '132';
+    const page = 1;
+    const size = 15;
+    const orderBy = orderByEnum.ASC;
+    const sortBy = "name";
+    const countryId = "1";
+
+    try {
+      await billingDataController.findBillingDataPaginated(page, size, countryId, orderBy, sortBy, uid);
     } catch (error) {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.response.error).toContain('An error ocurred retrieving the data');
@@ -99,9 +169,10 @@ describe('BillingData Controller', () => {
     const size = 15;
     const orderBy = orderByEnum.ASC;
     const sortBy = "name";
+    const countryId = "1";
 
     try {
-      await billingDataController.findBillingData(page, size, orderBy, sortBy, uid);
+      await billingDataController.findBillingDataPaginated(page, size, countryId, orderBy, sortBy, uid);
     } catch (error) {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.response.error).toContain('No billing data for user with uid:');
@@ -112,7 +183,7 @@ describe('BillingData Controller', () => {
   it('PUT should return 200 when update billing is OK', async () => {
     const updateBillingDataById = BillingDataService.prototype.updateBillingDataById = jest.fn();
     updateBillingDataById.mockReturnValue(mockBillingData.billingDataEntity[0]);
-    const expectedResult = mockBillingData.billingDataEntity[0];
+    const expectedResult = mockBillingData.billingDataResponseOldVersion[0];
     const billingDataIdForUpdate = 1;
 
     const returnedValue = await billingDataController.update(billingDataIdForUpdate, mockBillingData.billingData[0]);

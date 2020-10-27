@@ -57,7 +57,7 @@ export class ShippingAddressDto {
 
   @IsNotEmpty()
   @IsString()
-  addressReference: string;
+  reference: string;
 
   @ValidateNested()
   @Type(() => LivingPlaceDto)
@@ -66,7 +66,7 @@ export class ShippingAddressDto {
 
   @IsOptional()
   @IsString()
-  contactPhoneNumber?: string;
+  numberContactAddress?: string;
 
   @IsOptional()
   @IsBoolean()
