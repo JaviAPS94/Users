@@ -40,7 +40,7 @@ pipelines:
           script:
             - make docker-build-users docker-export-users
           artifacts:
-            - ecommerce-users.docker
+            - ecommerce-ms-users.docker
           services:
             - docker
           caches:
