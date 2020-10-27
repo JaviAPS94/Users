@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import ShippingAddressTransformer from '../../../src/shippingAddress/transformers/shippingAddress.transformer';
 import { orderByEnum } from '../../../src/billingData/enums/order-by.enum';
 import { ShippingAddress } from '../../../src/entity/ShippingAddress';
 import { ShippingAddressService } from '../../../src/shippingAddress/shippingAddress.service';
+import { ShippingAddressTransformer } from '../../../src/shippingAddress/transformers/shippingAddress.transformer';
 import { UserModule } from '../../../src/users/user.module';
 import { UserService } from '../../../src/users/user.service';
 import { EntityManagerWrapperService } from '../../../src/utils/entity-manager-wrapper.service';

@@ -2,7 +2,7 @@ import * as moment from "moment";
 import { Document } from "src/entity/Document";
 import { User } from "src/entity/User";
 
-export default class UserTransformer {
+export class UserTransformer {
   public transformUserAndDocument = (userAndDocument: { userReturned: User; documentReturned: Document; }, shippingAddress: any = undefined, billingData: any = undefined) => {
     const transformedNamesObject = {
       idInt: userAndDocument.userReturned.id,
@@ -41,28 +41,7 @@ export default class UserTransformer {
   }
 
   public transformUserWithDocumentByCountry = (user: User) => {
-    const transformedNamesObjectUserWithDocumentByCountry = {
-      idInt: user.id,
-      birthdate: moment(user.birthdate).format("Y-MM-DD"),
-      referredCode: (user.additionalInfo && user.additionalInfo.referredCode) ?
-        user.additionalInfo.referredCode : null,
-      shoppingCart: (user.additionalInfo && user.additionalInfo.shoppingCart) ?
-        user.additionalInfo.shoppingCart : null,
-      totalCoupons: (user.additionalInfo && user.additionalInfo.totalCoupons) ?
-        user.additionalInfo.totalCoupons : null,
-      documentType: user.documentByUser[0].documentType,
-      document: user.documentByUser[0].document,
-      reasonDisabled: (user.additionalInfo && user.additionalInfo.reasonDisabled) ?
-        user.additionalInfo.reasonDisabled : null,
-      registered: (user.additionalInfo && user.additionalInfo.registered) ?
-        true : false,
-      createdAt: (user.createdAt) ?
-        moment(user.createdAt).format("Y-MM-DD HH:mm:ss") : null,
-      updatedAt: (user.updatedAt) ?
-        moment(user.updatedAt).format("Y-MM-DD HH:mm:ss") : null,
-      externalUpdateAt: (user.additionalInfo && user.additionalInfo.externalUpdateAt) ?
-        user.additionalInfo.externalUpdateAt : null,
-    };
+    const transformedNamesObjectUserWithDocumentByCountry = this.transformGenericUser(user);
 
     delete user.createdAt;
     delete user.updatedAt;
@@ -78,26 +57,6 @@ export default class UserTransformer {
 
   public transformUserWithBillingAndShipping = (user: User) => {
     const transformedNamesObjectUserWithShippingAndBilling = {
-      idInt: user.id,
-      birthdate: moment(user.birthdate).format("Y-MM-DD"),
-      referredCode: (user.additionalInfo && user.additionalInfo.referredCode) ?
-        user.additionalInfo.referredCode : null,
-      shoppingCart: (user.additionalInfo && user.additionalInfo.shoppingCart) ?
-        user.additionalInfo.shoppingCart : null,
-      totalCoupons: (user.additionalInfo && user.additionalInfo.totalCoupons) ?
-        user.additionalInfo.totalCoupons : null,
-      documentType: user.documentByUser[0].documentType,
-      document: user.documentByUser[0].document,
-      reasonDisabled: (user.additionalInfo && user.additionalInfo.reasonDisabled) ?
-        user.additionalInfo.reasonDisabled : null,
-      registered: (user.additionalInfo && user.additionalInfo.registered) ?
-        true : false,
-      createdAt: (user.createdAt) ?
-        moment(user.createdAt).format("Y-MM-DD HH:mm:ss") : null,
-      updatedAt: (user.updatedAt) ?
-        moment(user.updatedAt).format("Y-MM-DD HH:mm:ss") : null,
-      externalUpdateAt: (user.additionalInfo && user.additionalInfo.externalUpdateAt) ?
-        user.additionalInfo.externalUpdateAt : null,
       billingAddress: {
         idInt: user.billingDataByUser[0].id,
         uid: user.uid,
@@ -115,6 +74,8 @@ export default class UserTransformer {
           moment(user.shippingAddressByUser[0].updatedAt).format("Y-MM-DD HH:mm:ss") : null
       }
     };
+
+    Object.assign(transformedNamesObjectUserWithShippingAndBilling, this.transformGenericUser(user));
 
     delete user.billingDataByUser[0].createdAt;
     delete user.billingDataByUser[0].updatedAt;
@@ -140,5 +101,31 @@ export default class UserTransformer {
     Object.assign(transformedNamesObjectUserWithShippingAndBilling, user)
 
     return transformedNamesObjectUserWithShippingAndBilling;
+  }
+
+  public transformGenericUser = (user: User) => {
+    const transformGenericUser = {
+      idInt: user.id,
+      birthdate: moment(user.birthdate).format("Y-MM-DD"),
+      referredCode: (user.additionalInfo && user.additionalInfo.referredCode) ?
+        user.additionalInfo.referredCode : null,
+      shoppingCart: (user.additionalInfo && user.additionalInfo.shoppingCart) ?
+        user.additionalInfo.shoppingCart : null,
+      totalCoupons: (user.additionalInfo && user.additionalInfo.totalCoupons) ?
+        user.additionalInfo.totalCoupons : null,
+      documentType: user.documentByUser[0].documentType,
+      document: user.documentByUser[0].document,
+      reasonDisabled: (user.additionalInfo && user.additionalInfo.reasonDisabled) ?
+        user.additionalInfo.reasonDisabled : null,
+      registered: (user.additionalInfo && user.additionalInfo.registered) ?
+        true : false,
+      createdAt: (user.createdAt) ?
+        moment(user.createdAt).format("Y-MM-DD HH:mm:ss") : null,
+      updatedAt: (user.updatedAt) ?
+        moment(user.updatedAt).format("Y-MM-DD HH:mm:ss") : null,
+      externalUpdateAt: (user.additionalInfo && user.additionalInfo.externalUpdateAt) ?
+        user.additionalInfo.externalUpdateAt : null,
+    };
+    return transformGenericUser;
   }
 }

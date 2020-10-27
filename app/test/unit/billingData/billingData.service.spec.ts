@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import BillingDataTransformer from '../../../src/billingData/transformers/billingData.transformer';
 import { BillingDataService } from '../../../src/billingData/billingData.service';
 import { orderByEnum } from '../../../src/billingData/enums/order-by.enum';
+import { BillingDataTransformer } from '../../../src/billingData/transformers/billingData.transformer';
 import { BillingData } from '../../../src/entity/BillingData';
 import { UserModule } from '../../../src/users/user.module';
 import { UserService } from '../../../src/users/user.service';

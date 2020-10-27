@@ -5,7 +5,7 @@ import { FindUserBillingShippingDto } from './dto/find-user-billing-shipping.dto
 import { FindUserDto } from './dto/find-user.dto';
 import { UserUpdateDto } from './dto/user-update-dto';
 import { UserDto } from './dto/user.dto';
-import UserTransformer from './transformers/user.transformer';
+import { UserTransformer } from './transformers/user.transformer';
 import { UserService } from './user.service';
 
 @Controller('api/users')
@@ -18,7 +18,7 @@ export class UserController {
   async create(@Body() userDto: UserDto) {
     try {
       const userAndDocument = await this.userService.saveUser(userDto);
-      const result = await this.userTransformer.transformUserAndDocument(userAndDocument);
+      const result = this.userTransformer.transformUserAndDocument(userAndDocument);
       return result;
     }
     catch (error) {
@@ -33,7 +33,7 @@ export class UserController {
   async update(@Body() userDto: UserUpdateDto) {
     try {
       const userAndDocument = await this.userService.updateUser(userDto);
-      const result = await this.userTransformer.transformUserAndDocument(userAndDocument);
+      const result = this.userTransformer.transformUserAndDocument(userAndDocument);
       return result;
     }
     catch (error) {
@@ -53,7 +53,7 @@ export class UserController {
     let result;
     try {
       const user = await this.userService.getUser(uid, account, countryId);
-      result = (!_.isUndefined(user)) ? await this.userTransformer.transformUserWithDocumentByCountry(user) : undefined;
+      result = (!_.isUndefined(user)) ? this.userTransformer.transformUserWithDocumentByCountry(user) : undefined;
     }
     catch (error) {
       throw new HttpException({
@@ -83,7 +83,7 @@ export class UserController {
         countryId: findUserDto.countryId
       };
       const user = await this.userService.getUsersByDynamicFilter(dynamicFilterDto);
-      result = (user.length > 0) ? await this.userTransformer.transformUserWithDocumentByCountry(user[0]) : undefined;
+      result = (user.length > 0) ? this.userTransformer.transformUserWithDocumentByCountry(user[0]) : undefined;
     }
     catch (error) {
       throw new HttpException({

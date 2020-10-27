@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, 
 import { orderByEnum } from '../../src/billingData/enums/order-by.enum';
 import { ShippingAddressDto } from './dto/shipping-address.dto';
 import { ShippingAddressService } from './shippingAddress.service';
-import ShippingAddressTransformer from './transformers/shippingAddress.transformer';
+import { ShippingAddressTransformer } from './transformers/shippingAddress.transformer';
 
 @Controller('api/shipping-address')
 export class ShippingAddressController {
@@ -14,7 +14,7 @@ export class ShippingAddressController {
   async create(@Body() shippingAddressDto: ShippingAddressDto) {
     try {
       const shippingAddress = await this.shippingAddressService.saveShippingAddress(shippingAddressDto);
-      return await this.shippingAddressTransformer.transformShippingAddress(shippingAddress);
+      return this.shippingAddressTransformer.transformShippingAddress(shippingAddress);
     }
     catch (error) {
       throw new HttpException({
@@ -42,7 +42,7 @@ export class ShippingAddressController {
         limit: size,
         route: "http://host"
       }, countryId);
-      result = await this.shippingAddressTransformer.transformShippingAddressPaginated(responsePaginated, orderBy, sortBy);
+      result = this.shippingAddressTransformer.transformShippingAddressPaginated(responsePaginated, orderBy, sortBy);
     }
     catch (error) {
       throw new HttpException({
@@ -95,7 +95,7 @@ export class ShippingAddressController {
   async update(@Param('id') id: number, @Body() updateShippingAddress: ShippingAddressDto) {
     try {
       const shippingAddress = await this.shippingAddressService.updateShippingAddressById(id, updateShippingAddress);
-      return await this.shippingAddressTransformer.transformShippingAddress(shippingAddress);
+      return this.shippingAddressTransformer.transformShippingAddress(shippingAddress);
     }
     catch (error) {
       throw new HttpException({

@@ -29,10 +29,6 @@ class CountryDto {
 
 export class UserUpdateDto {
   @IsNotEmpty()
-  @IsString()
-  uid: string;
-
-  @IsNotEmpty()
   @IsNumber()
   account: number;
 
@@ -137,4 +133,8 @@ export class UserUpdateDto {
   @IsOptional()
   @IsDate()
   lastDateOfActivity?: Date;
+
+  @IsNotEmpty()
+  @IsString()
+  uid: string;
 }

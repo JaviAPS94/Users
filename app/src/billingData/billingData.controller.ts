@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, 
 import { BillingDataService } from './billingData.service';
 import { BillingDataDto } from './dto/billing-data.dto';
 import { orderByEnum } from './enums/order-by.enum';
-import BillingDataTransformer from './transformers/billingData.transformer';
+import { BillingDataTransformer } from './transformers/billingData.transformer';
 
 @Controller('api/billing-data')
 export class BillingDataController {
@@ -14,7 +14,7 @@ export class BillingDataController {
   async create(@Body() billingDataDto: BillingDataDto) {
     try {
       const billingData = await this.billingDataService.saveBillingData(billingDataDto);
-      return await this.billingDataTransformer.transformBillingData(billingData);
+      return this.billingDataTransformer.transformBillingData(billingData);
     }
     catch (error) {
       throw new HttpException({
@@ -28,7 +28,7 @@ export class BillingDataController {
   async update(@Param('id') id: number, @Body() updateBillingData: BillingDataDto) {
     try {
       const billingData = await this.billingDataService.updateBillingDataById(id, updateBillingData);
-      return await this.billingDataTransformer.transformBillingData(billingData);
+      return this.billingDataTransformer.transformBillingData(billingData);
     }
     catch (error) {
       throw new HttpException({
@@ -56,7 +56,7 @@ export class BillingDataController {
         limit: size,
         route: "http://host"
       }, countryId);
-      result = await this.billingDataTransformer.transformBillingDataPaginated(responsePaginated, orderBy, sortBy);
+      result = this.billingDataTransformer.transformBillingDataPaginated(responsePaginated, orderBy, sortBy);
     }
     catch (error) {
       throw new HttpException({

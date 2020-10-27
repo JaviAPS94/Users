@@ -142,8 +142,9 @@ export class BirthdateConstraint implements ValidatorConstraintInterface {
   }
 
   async validBirthDate(value: any, args: ValidationArguments, connection: EntityManagerWrapperService) {
-    const account = (args.object as any)[args.constraints[0]];
-    const document = (args.object as any)[args.constraints[1]];
+    // TODO custom validation
+    // const account = (args.object as any)[args.constraints[0]];
+    // const document = (args.object as any)[args.constraints[1]];
     const test = await connection.findProperties({
       where: { id: 1 },
     });
@@ -181,7 +182,8 @@ export class DocumentTypesConstraint implements ValidatorConstraintInterface {
   }
 
   async validDocumentType(value: any, args: ValidationArguments, connection: EntityManagerWrapperService) {
-    const account = (args.object as any)[args.constraints[0]];
+    // TODO custom validation
+    //const account = (args.object as any)[args.constraints[0]];
     //const document = (args.object as any)[args.constraints[1]];
     const test = await connection.findProperties({
       where: { id: 1 },
@@ -263,7 +265,7 @@ export class DocumentValidationConstraint implements ValidatorConstraintInterfac
   }
 
   public validateProvince = (document: any) => {
-    if (parseInt(document, undefined) <= 0 || parseInt(document, undefined) > 24) {
+    if (parseInt(document) <= 0 || parseInt(document) > 24) {
       return false;
     }
     return true;
@@ -397,23 +399,23 @@ export class AlreadyExistDocumentConstraint implements ValidatorConstraintInterf
 export const customValidation = (value, rules) => {
   const result = [];
   const validationCases = {
-    required: (value: any, ruleValue: any) => {
-      return ruleValue ? (!_.isUndefined(value)) : true;
+    required: (requiredValue: any, ruleValue: any) => {
+      return ruleValue ? (!_.isUndefined(requiredValue)) : true;
     },
-    birthdateMin: (value: any, ruleValue: any) => {
-      const birthdate = moment(value, "YYYY-MM-DD");
+    birthdateMin: (birthdateMinValue: any, ruleValue: any) => {
+      const birthdate = moment(birthdateMinValue, "YYYY-MM-DD");
       const today = moment();
       const validMinBirthdate = today.subtract(ruleValue, "years");
       return (birthdate <= validMinBirthdate);
     },
-    birthdateMax: (value: any, ruleValue: any) => {
-      const birthdate = moment(value, "YYYY-MM-DD");
+    birthdateMax: (birthdateMaxValue: any, ruleValue: any) => {
+      const birthdate = moment(birthdateMaxValue, "YYYY-MM-DD");
       const today = moment();
       const validMaxBirthdate = today.subtract(ruleValue, "years");
       return (birthdate >= validMaxBirthdate);
     },
-    in: (value: any, ruleValue: any) => {
-      return ruleValue.includes(value);
+    in: (inValue: any, ruleValue: any) => {
+      return ruleValue.includes(inValue);
     },
     default: () => {
       return false;

@@ -1,7 +1,7 @@
 import { Pagination } from "nestjs-typeorm-paginate";
 import { ShippingAddress } from "../../entity/ShippingAddress";
 
-export default class ShippingAddressTransformer {
+export class ShippingAddressTransformer {
   public transformShippingAddress = (shippingAddres: ShippingAddress) => {
     const transformedNamesObject = {
       externalUpdateAt: shippingAddres.updatedAt

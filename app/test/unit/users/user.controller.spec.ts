@@ -4,7 +4,7 @@ import { DynamicFilterDto } from '../../../src/users/dto/dynamic-filter.dto';
 import { FindUserBillingShippingDto } from '../../../src/users/dto/find-user-billing-shipping.dto';
 import { FindUserDto } from '../../../src/users/dto/find-user.dto';
 import { UserDto } from '../../../src/users/dto/user.dto';
-import UserTransformer from '../../../src/users/transformers/user.transformer';
+import { UserTransformer } from '../../../src/users/transformers/user.transformer';
 import { UserController } from '../../../src/users/user.controller';
 import { UserService } from '../../../src/users/user.service';
 import { mockUser } from '../../../test/mock-user';

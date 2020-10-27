@@ -3,7 +3,7 @@ import { Connection, QueryRunner } from 'typeorm';
 import { User } from '../../../src/entity/User';
 import { DynamicFilterDto } from '../../../src/users/dto/dynamic-filter.dto';
 import { FindUserBillingShippingDto } from '../../../src/users/dto/find-user-billing-shipping.dto';
-import UserTransformer from '../../../src/users/transformers/user.transformer';
+import { UserTransformer } from '../../../src/users/transformers/user.transformer';
 import { UserService } from '../../../src/users/user.service';
 import { EntityManagerWrapperService } from '../../../src/utils/entity-manager-wrapper.service';
 import { mockBillingData } from '../../../test/mock-billing-data';
@@ -35,7 +35,7 @@ describe('UserService', () => {
     qr.startTransaction = jest.fn();
     qr.commitTransaction = jest.fn();
     qr.rollbackTransaction = jest.fn();
-    qr.manager.findOne  = jest.fn().mockReturnValue(mockUser.entityUsers[0]);
+    qr.manager.findOne = jest.fn().mockReturnValue(mockUser.entityUsers[0]);
     qr.release = jest.fn();
 
     const module: TestingModule = await Test.createTestingModule({
@@ -59,7 +59,7 @@ describe('UserService', () => {
     const expectedResult = mockUser.userAndDocument[0];
 
     const queryRunner = connection.createQueryRunner();
-   
+
     jest.spyOn(queryRunner.manager, 'save').mockResolvedValueOnce(mockUser.userAndDocument[0].userReturned);
     jest.spyOn(queryRunner.manager, 'save').mockResolvedValueOnce(mockUser.entityDocument[0]);
 

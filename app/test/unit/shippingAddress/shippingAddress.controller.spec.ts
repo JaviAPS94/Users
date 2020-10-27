@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import ShippingAddressTransformer from '../../../src/shippingAddress/transformers/shippingAddress.transformer';
 import { orderByEnum } from '../../../src/billingData/enums/order-by.enum';
 import { ShippingAddressDto } from '../../../src/shippingAddress/dto/shipping-address.dto';
 import { ShippingAddressController } from '../../../src/shippingAddress/shippingAddress.controller';
 import { ShippingAddressService } from '../../../src/shippingAddress/shippingAddress.service';
+import { ShippingAddressTransformer } from '../../../src/shippingAddress/transformers/shippingAddress.transformer';
 import { UserModule } from '../../../src/users/user.module';
 import { mockShippingAddress } from '../../../test/mock-shipping-address';
 

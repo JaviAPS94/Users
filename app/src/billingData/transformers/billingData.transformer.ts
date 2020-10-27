@@ -1,7 +1,7 @@
 import { Pagination } from "nestjs-typeorm-paginate";
 import { BillingData } from "../../../src/entity/BillingData";
 
-export default class BillingDataTransformer {
+export class BillingDataTransformer {
   public transformBillingData = (billingData: BillingData) => {
     const transformedNamesObject = {
       idInt: billingData.id

@@ -93,7 +93,7 @@ export class EntityManagerWrapperService {
       .andWhere("document.countryId = :countryId", { countryId: dynamicFilterDto.countryId });
 
     users = (dynamicFilterDto.name === "document") ? users = users.andWhere("document.document = :document", { document: dynamicFilterDto.value })
-      : users = users.andWhere(`${userFieldToSearch} like :value`, { value: "%" + dynamicFilterDto.value + "%" });
+      : users.andWhere(`${userFieldToSearch} like :value`, { value: "%" + dynamicFilterDto.value + "%" });
 
     return users.getMany();
   }
