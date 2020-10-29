@@ -6,6 +6,7 @@ import { User } from "../../src/entity/User";
 import { EntityManagerWrapperService } from "../../src/utils/entity-manager-wrapper.service";
 import { DynamicFilterDto } from "./dto/dynamic-filter.dto";
 import { FindUserBillingShippingDto } from './dto/find-user-billing-shipping.dto';
+import { UserUpdateDto } from "./dto/user-update-dto";
 import { UserDto } from "./dto/user.dto";
 import { documentType } from "./enums/document-type.enum";
 
@@ -57,7 +58,7 @@ export class UserService {
     }
   }
 
-  public async updateUser(userDto: UserDto) {
+  public async updateUser(userDto: UserUpdateDto) {
     const connection = getConnection().createQueryRunner();
     return await this.update(userDto, connection);
   }
@@ -89,7 +90,7 @@ export class UserService {
     }
   }
 
-  public async update(userDto: UserDto, queryRunner: QueryRunner) {
+  public async update(userDto: UserUpdateDto, queryRunner: QueryRunner) {
     // establish real database connection using our new query runner
     await queryRunner.connect();
 
@@ -106,7 +107,7 @@ export class UserService {
       const userReturned = await queryRunner.manager.save(user);
 
       const documentToUpdate = await queryRunner.manager.findOne(Document, {
-        where: { document: `${userDto.document}`, countryId: `${userDto.document}` }
+        where: { document: `${userDto.document}`, countryId: `${userDto.country.id}` }
       }) ?? new Document();
 
       documentToUpdate.userId = userReturned.id;
