@@ -43,7 +43,7 @@ function run_db {
   --rm \
   --network ${NETWORK_NAME} \
   --name ${DB_CONTAINER_NAME} \
-  -p 3307:3306 \
+  -p 3306:3306 \
   --env-file ${ROOT_PATH}/local/db-secrets.env \
   --env-file ${ROOT_PATH}/local/db-config.env \
   ${MYSQL_IMAGE}

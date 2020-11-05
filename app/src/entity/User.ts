@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { genre } from "../users/enums/genre.enum";
+import { gender } from "../users/enums/gender.enum";
 import { maritalStatus } from "../users/enums/marital-status.enum";
 import { BillingData } from "./BillingData";
 import { Document } from "./Document";
@@ -62,8 +62,8 @@ export class User {
   @Column("enum", { enum: maritalStatus, nullable: true })
   maritalStatus: maritalStatus;
 
-  @Column("enum", { enum: genre, nullable: true })
-  genre: genre;
+  @Column("enum", { enum: gender, nullable: true })
+  gender: gender;
 
   @Column("json", { nullable: true })
   facebookId: any;

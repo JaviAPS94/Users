@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import { documentType } from "../src/users/enums/document-type.enum";
-import { genre } from "../src/users/enums/genre.enum";
+import { gender } from "../src/users/enums/gender.enum";
 import { maritalStatus } from "../src/users/enums/marital-status.enum";
 
 export const mockUser = {
@@ -21,7 +21,7 @@ export const mockUser = {
       document: "1719711176",
       documentType: documentType.CI,
       maritalStatus: maritalStatus.MARRIED,
-      genre: genre.MALE,
+      gender: gender.MALE,
       active: true,
       origin: "WEB",
       birthdate: moment("1994-05-01", "YYYY-MM-DD").toDate(),
@@ -49,7 +49,7 @@ export const mockUser = {
       document: "1719711176",
       documentType: documentType.CI,
       maritalStatus: maritalStatus.MARRIED,
-      genre: genre.MALE,
+      gender: gender.MALE,
       active: true,
       origin: "WEB",
       birthdate: "1994-05-01",
@@ -81,7 +81,7 @@ export const mockUser = {
       document: '1719711176',
       documentType: 'CI',
       maritalStatus: 'MARRIED',
-      genre: 'MALE',
+      gender: 'MALE',
       facebookId: null,
       whatsappId: null,
       additionalInfo: null,
@@ -128,7 +128,7 @@ export const mockUser = {
       additionalPhone: null,
       code: "ALEPIN132",
       maritalStatus: "MARRIED",
-      genre: "MALE",
+      gender: "MALE",
       facebookId: null,
       whatsappId: null,
       additionalInfo: null,
@@ -168,7 +168,7 @@ export const mockUser = {
         document: '1719711176',
         documentType: 'CI',
         maritalStatus: 'MARRIED',
-        genre: 'MALE',
+        gender: 'MALE',
         active: 1,
         registeredPlatform: 'WEB',
         birthdate: '1994-05-01',
@@ -226,7 +226,7 @@ export const mockUser = {
         document: '1719711176',
         documentType: 'CI',
         maritalStatus: 'MARRIED',
-        genre: 'MALE',
+        gender: 'MALE',
         active: 1,
         registeredPlatform: 'WEB',
         birthdate: '1994-05-01',
@@ -294,7 +294,7 @@ export const mockUser = {
         countryIsoCode: "EC"
       },
       maritalStatus: "MARRIED",
-      genre: "MALE",
+      gender: "MALE",
       active: 1,
       registeredPlatform: "WEB",
       country: {
@@ -346,7 +346,7 @@ export const mockUser = {
         countryIsoCode: "EC"
       },
       maritalStatus: "MARRIED",
-      genre: "MALE",
+      gender: "MALE",
       active: 1,
       registeredPlatform: "WEB",
       country: {
@@ -392,7 +392,7 @@ export const mockUser = {
       document: '1719711176',
       documentType: 'CI',
       maritalStatus: 'MARRIED',
-      genre: 'MALE',
+      gender: 'MALE',
       facebookId: null,
       whatsappId: null,
       additionalInfo: null,
@@ -442,7 +442,7 @@ export const mockUser = {
       additionalPhone: null,
       code: 'ALEPINTEST3',
       maritalStatus: 'MARRIED',
-      genre: 'MALE',
+      gender: 'MALE',
       facebookId: null,
       whatsappId: null,
       additionalInfo: null,
@@ -544,7 +544,7 @@ export const mockUser = {
       document: '1719711176',
       documentType: 'CI',
       maritalStatus: 'MARRIED',
-      genre: 'MALE',
+      gender: 'MALE',
       facebookId: null,
       whatsappId: null,
       additionalInfo: null,
@@ -658,7 +658,7 @@ export const mockUser = {
       additionalPhone: null,
       code: "ALEPINTEST3",
       maritalStatus: "MARRIED",
-      genre: "MALE",
+      gender: "MALE",
       facebookId: null,
       whatsappId: null,
       additionalInfo: null,
@@ -685,7 +685,7 @@ export const mockUser = {
         document: '1719711176',
         documentType: 'CI',
         maritalStatus: 'MARRIED',
-        genre: 'MALE',
+        gender: 'MALE',
         active: 1,
         registeredPlatform: 'WEB',
         birthdate: '1994-05-01',
@@ -754,7 +754,7 @@ export const mockUser = {
       secondLastName: 'Simbaña',
       phone: { number: '0958963172', countryCode: '593', countryIsoCode: 'EC' },
       maritalStatus: 'MARRIED',
-      genre: 'MALE',
+      gender: 'MALE',
       active: 1,
       registeredPlatform: 'WEB',
       country: { id: 1 },
@@ -805,7 +805,7 @@ export const mockUser = {
       document: '1719711176',
       documentType: 'CI',
       maritalStatus: 'MARRIED',
-      genre: 'MALE',
+      gender: 'MALE',
       facebookId: null,
       whatsappId: null,
       additionalInfo: {

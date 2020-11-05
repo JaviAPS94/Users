@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
 import { Birthdate, ConditionalDocument, ConditionalDocumentType, DocumentTypes, DocumentValidation } from '../../../src/utils/custom-validations.service';
-import { genre } from '../enums/genre.enum';
+import { gender } from '../enums/gender.enum';
 import { maritalStatus } from '../enums/marital-status.enum';
 
 class PhoneDto {
@@ -90,6 +90,7 @@ export class UserUpdateDto {
   @IsNotEmpty()
   origin: string;
 
+  @IsOptional()
   @DocumentTypes('accountId')
   @ConditionalDocumentType('uid', 'country')
   documentType: string;
@@ -97,7 +98,7 @@ export class UserUpdateDto {
   @Birthdate('accountId', 'document')
   birthdate: Date;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @DocumentValidation('documentType')
   @ConditionalDocument('uid', 'country')
@@ -124,8 +125,9 @@ export class UserUpdateDto {
   @IsBoolean()
   active: boolean;
 
-  @IsEnum(genre)
-  genre: genre;
+  @IsOptional()
+  @IsEnum(gender)
+  gender: gender;
 
   @IsOptional()
   @IsObject()

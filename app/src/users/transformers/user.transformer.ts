@@ -1,6 +1,7 @@
 import * as moment from "moment";
 import { Document } from "src/entity/Document";
 import { User } from "src/entity/User";
+import * as _ from "lodash";
 
 export class UserTransformer {
   public transformUserAndDocument = (userAndDocument: { userReturned: User; documentReturned: Document; }, shippingAddress: any = undefined, billingData: any = undefined) => {
@@ -13,8 +14,9 @@ export class UserTransformer {
         userAndDocument.userReturned.additionalInfo.shoppingCart : null,
       totalCoupons: (userAndDocument.userReturned.additionalInfo && userAndDocument.userReturned.additionalInfo.totalCoupons) ?
         userAndDocument.userReturned.additionalInfo.totalCoupons : null,
-      documentType: userAndDocument.documentReturned.documentType,
-      document: userAndDocument.documentReturned.document,
+      documentType: (!_.isUndefined(userAndDocument.documentReturned)) ? userAndDocument.documentReturned.documentType
+        : null,
+      document: (!_.isUndefined(userAndDocument.documentReturned)) ? userAndDocument.documentReturned.document : null,
       reasonDisabled: (userAndDocument.userReturned.additionalInfo && userAndDocument.userReturned.additionalInfo.reasonDisabled) ?
         userAndDocument.userReturned.additionalInfo.reasonDisabled : null,
       registered: (userAndDocument.userReturned.additionalInfo && userAndDocument.userReturned.additionalInfo.registered) ?

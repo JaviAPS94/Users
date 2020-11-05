@@ -20,7 +20,7 @@ export class UserService {
 
   async create(user: UserDto, queryRunner: QueryRunner) {
     const userToCreate = new User();
-    const documentToCreate = new Document();
+    let documentReturned = undefined;
 
     Object.assign(userToCreate, user);
     userToCreate.accountId = user.account;
@@ -36,13 +36,15 @@ export class UserService {
       // execute some operations on this transaction
       const userReturned = await queryRunner.manager.save(userToCreate);
 
-      documentToCreate.userId = userReturned.id;
-      documentToCreate.document = user.document;
-      documentToCreate.documentType = documentType[user.documentType];
-      documentToCreate.accountId = user.account;
-      documentToCreate.countryId = user.country.id;
-
-      const documentReturned = await queryRunner.manager.save(documentToCreate);
+      if (user.document && user.documentType) {
+        const documentToCreate = new Document();
+        documentToCreate.userId = userReturned.id;
+        documentToCreate.document = user.document;
+        documentToCreate.documentType = documentType[user.documentType];
+        documentToCreate.accountId = user.account;
+        documentToCreate.countryId = user.country.id;
+        documentReturned = await queryRunner.manager.save(documentToCreate);
+      }
 
       // commit transaction now
       await queryRunner.commitTransaction();
@@ -91,6 +93,7 @@ export class UserService {
   }
 
   public async update(userDto: UserUpdateDto, queryRunner: QueryRunner) {
+    let documentReturned = undefined;
     // establish real database connection using our new query runner
     await queryRunner.connect();
 
@@ -106,17 +109,19 @@ export class UserService {
       Object.assign(user, userDto);
       const userReturned = await queryRunner.manager.save(user);
 
-      const documentToUpdate = await queryRunner.manager.findOne(Document, {
-        where: { document: `${userDto.document}`, countryId: `${userDto.country.id}` }
-      }) ?? new Document();
+      if (userDto.document && userDto.documentType) {
+        const documentToUpdate = await queryRunner.manager.findOne(Document, {
+          where: { document: `${userDto.document}`, countryId: `${userDto.country.id}` }
+        }) ?? new Document();
 
-      documentToUpdate.userId = userReturned.id;
-      documentToUpdate.document = userDto.document;
-      documentToUpdate.documentType = documentType[userDto.documentType];
-      documentToUpdate.accountId = userDto.account;
-      documentToUpdate.countryId = userDto.country.id;
+        documentToUpdate.userId = userReturned.id;
+        documentToUpdate.document = userDto.document;
+        documentToUpdate.documentType = documentType[userDto.documentType];
+        documentToUpdate.accountId = userDto.account;
+        documentToUpdate.countryId = userDto.country.id;
 
-      const documentReturned = await queryRunner.manager.save(documentToUpdate);
+        documentReturned = await queryRunner.manager.save(documentToUpdate);
+      }
 
       // commit transaction now
       await queryRunner.commitTransaction();
