@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as _ from "lodash";
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { EntityManager } from 'typeorm';
 import { DynamicFilterDto } from '../../src/users/dto/dynamic-filter.dto';
@@ -123,13 +124,16 @@ export class EntityManagerWrapperService {
   }
 
   public async findUserByUidAndCountry(uid: string, countryId: number) {
-    const user = await this.connection.getRepository(User)
+    let user = await this.connection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.documentByUser", "document")
       .where("user.uid = :uid", { uid })
-      .andWhere("document.countryId = :countryId", { countryId })
-      .getOne();
-    return user;
+
+    if (!_.isUndefined(countryId)) {
+      user = user.andWhere("document.countryId = :countryId", { countryId });
+    }
+
+    return user.getOne();
   }
 
   public async findUserByUidWithShippingAndBilling(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto) {

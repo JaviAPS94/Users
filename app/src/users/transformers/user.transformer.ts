@@ -115,8 +115,8 @@ export class UserTransformer {
         user.additionalInfo.shoppingCart : null,
       totalCoupons: (user.additionalInfo && user.additionalInfo.totalCoupons) ?
         user.additionalInfo.totalCoupons : null,
-      documentType: user.documentByUser[0].documentType,
-      document: user.documentByUser[0].document,
+      documentType: (user.documentByUser.length > 0) ? user.documentByUser[0].documentType : null,
+      document:(user.documentByUser.length > 0) ? user.documentByUser[0].document : null,
       reasonDisabled: (user.additionalInfo && user.additionalInfo.reasonDisabled) ?
         user.additionalInfo.reasonDisabled : null,
       registered: (user.additionalInfo && user.additionalInfo.registered) ?
