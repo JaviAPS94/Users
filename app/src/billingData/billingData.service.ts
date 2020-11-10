@@ -30,6 +30,11 @@ export class BillingDataService {
       if (_.isEmpty(user)) {
         throw new Error('BillingData needs a VALID uid');
       }
+      const defaultBillingData = await connection.findDefaultBillingByUser(user.id);
+      if (!_.isUndefined(defaultBillingData)) {
+        defaultBillingData.default = false;
+        await connection.save(defaultBillingData);
+      }
       billingDataToCreate.user = user;
       const billingDataReturned = await connection.save(billingDataToCreate);
       return billingDataReturned;
@@ -48,6 +53,11 @@ export class BillingDataService {
       const billingData = await this.findBillingDataById(id, connection);
       if (_.isEmpty(billingData)) {
         throw new Error('BillingData needs a VALID id');
+      }
+      if (billingDataForUpdateDto.default === true) {
+        const defaultBillingData = await connection.findDefaultBillingByUser(billingData.userId);
+        defaultBillingData.default = false;
+        await connection.save(defaultBillingData);
       }
       Object.assign(billingData, billingDataForUpdateDto);
       return await connection.save(billingData);

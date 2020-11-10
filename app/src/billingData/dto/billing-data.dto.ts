@@ -16,7 +16,7 @@ export class BillingDataDto {
   @IsString()
   uid: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   nickname: string;
 

@@ -149,4 +149,13 @@ export class EntityManagerWrapperService {
       .getOne();
     return user;
   }
+
+  public async findDefaultBillingByUser(userId: number) {
+    const billingData = await this.connection.getRepository(BillingData)
+      .createQueryBuilder("billing-data")
+      .where("billing-data.default = 1")
+      .andWhere("billing-data.userId = :userId", { userId })
+      .getOne();
+    return billingData;
+  }
 }

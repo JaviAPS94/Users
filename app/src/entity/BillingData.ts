@@ -15,7 +15,7 @@ export class BillingData {
   address: string;
 
   @Column({ type: "tinyint", nullable: true })
-  default: number;
+  default: boolean;
 
   @Column({ nullable: true })
   document: string;

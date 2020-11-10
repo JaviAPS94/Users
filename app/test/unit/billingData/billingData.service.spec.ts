@@ -247,6 +247,8 @@ const mockUpdateBillingDataSuccessful = () => {
   const returnedBillingData = new BillingData();
   Object.assign(returnedBillingData, mockBillingData.billingData[0]);
   const save = EntityManagerWrapperService.prototype.save = jest.fn();
+  const findDefaultBillingByUser = EntityManagerWrapperService.prototype.findDefaultBillingByUser = jest.fn();
+  findDefaultBillingByUser.mockReturnValue(returnedBillingData);
   save.mockReturnValue(returnedBillingData);
 };
 
