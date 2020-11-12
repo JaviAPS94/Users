@@ -3,12 +3,12 @@ import { IsBoolean, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsO
 import { AlreadyExistDocument, AlreadyExistPhoneNumber, Birthdate, DocumentTypes, DocumentValidation } from '../../../src/utils/custom-validations.service';
 import { gender } from '../enums/gender.enum';
 import { maritalStatus } from '../enums/marital-status.enum';
+import { userType } from '../enums/user-type.enum';
 
 class PhoneDto {
   @IsNotEmpty()
   @IsString()
   @Length(6, 12)
-  @AlreadyExistPhoneNumber()
   number: string;
 
   @IsNotEmpty()
@@ -83,6 +83,7 @@ export class UserDto {
 
   @IsNotEmpty()
   @ValidateNested()
+  @AlreadyExistPhoneNumber('type')
   @Type(() => PhoneDto)
   phone: PhoneDto;
 
@@ -139,4 +140,8 @@ export class UserDto {
   @IsOptional()
   @IsDate()
   lastDateOfActivity?: Date;
+
+  @IsOptional()
+  @IsEnum(userType)
+  type: userType;
 }

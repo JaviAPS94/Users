@@ -1,3 +1,4 @@
+import { userType } from "../users/enums/user-type.enum";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { gender } from "../users/enums/gender.enum";
 import { maritalStatus } from "../users/enums/marital-status.enum";
@@ -11,7 +12,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   uid: string;
 
   @Column({ nullable: false })
@@ -85,6 +86,9 @@ export class User {
 
   @Column({ type: "timestamp", nullable: true })
   lastDateOfActivity: Date;
+
+  @Column("enum", { enum: userType, nullable: false, default: userType.NORMAL })
+  type: userType;
 
   @CreateDateColumn({ type: "timestamp", nullable: true, select: true })
   createdAt: Date;

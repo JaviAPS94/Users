@@ -1,6 +1,7 @@
 import { registerDecorator, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import * as _ from "lodash";
 import * as moment from "moment";
+import { userType } from '../../src/users/enums/user-type.enum';
 import { getManager } from 'typeorm';
 import { EntityManagerWrapperService } from './entity-manager-wrapper.service';
 
@@ -16,12 +17,13 @@ export const Birthdate = (account: string, document: string, validationOptions?:
   };
 }
 
-export const AlreadyExistPhoneNumber = (validationOptions?: ValidationOptions) => {
+export const AlreadyExistPhoneNumber = (userType: string, validationOptions?: ValidationOptions) => {
   return (object: any, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
       propertyName,
       options: validationOptions,
+      constraints: [userType],
       validator: AlreadyExistPhoneNumberConstraint,
     });
   };
@@ -154,15 +156,19 @@ export class BirthdateConstraint implements ValidatorConstraintInterface {
 @ValidatorConstraint({ name: 'AlreadyExistPhoneNumber' })
 export class AlreadyExistPhoneNumberConstraint implements ValidatorConstraintInterface {
   async validate(value: any, args: ValidationArguments) {
+    const userTypeEnum = userType[(args.object as any)[args.constraints[0]]];
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.validPhoneNumber(value, wraperService);
+    return await this.validPhoneNumber(value.number, userTypeEnum, wraperService);
   }
 
   defaultMessage(args: ValidationArguments) {
     return "The phone number already exist in the database";
   }
 
-  async validPhoneNumber(value: any, connection: EntityManagerWrapperService) {
+  async validPhoneNumber(value: any, userTypeEnum: userType, connection: EntityManagerWrapperService) {
+    if (userTypeEnum === userType.DEPENDENT) {
+      return true;
+    }
     const userByPhoneNumber = await connection.findUserByPhoneNumber(value);
     return (_.isUndefined(userByPhoneNumber)) ? true : false;
   }

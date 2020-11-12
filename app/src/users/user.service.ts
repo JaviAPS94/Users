@@ -9,6 +9,7 @@ import { FindUserBillingShippingDto } from './dto/find-user-billing-shipping.dto
 import { UserUpdateDto } from "./dto/user-update-dto";
 import { UserDto } from "./dto/user.dto";
 import { documentType } from "./enums/document-type.enum";
+import { userType } from "./enums/user-type.enum";
 
 @Injectable()
 export class UserService {
@@ -33,6 +34,7 @@ export class UserService {
 
     try {
       userToCreate.code = await this.generateUserCode(user.name, user.lastname, user.uid);
+      userToCreate.uid = (user.type === userType.DEPENDENT) ? null : user.uid;
       // execute some operations on this transaction
       const userReturned = await queryRunner.manager.save(userToCreate);
 
@@ -102,11 +104,16 @@ export class UserService {
 
     try {
       // execute some operations on this transaction
-      const user = await queryRunner.manager.findOne(User, {
-        where: { uid: `${userDto.uid}` }
-      });
+      const user = (!_.isUndefined(userDto.type) && userDto.type === userType.DEPENDENT) ?
+        await queryRunner.manager.findOne(User, {
+          where: { id: `${userDto.idInt}` }
+        })
+        : await queryRunner.manager.findOne(User, {
+          where: { uid: `${userDto.uid}` }
+        });
 
       Object.assign(user, userDto);
+      user.uid = (user.type === userType.DEPENDENT) ? null : user.uid;
       const userReturned = await queryRunner.manager.save(user);
 
       if (userDto.document && userDto.documentType) {

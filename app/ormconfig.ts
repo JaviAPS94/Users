@@ -14,7 +14,7 @@ const ORMConfig = {
       process.env.MIGRATION_PATH 
    ],
    "subscribers": [
-      "src/subscriber/**/*.ts"
+      process.env.SUBSCRIBERS_PATH
    ],
    "cli": {
       "entitiesDir": "src/entity",

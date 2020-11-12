@@ -3,6 +3,7 @@ import { IsBoolean, IsDate, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsO
 import { Birthdate, ConditionalDocument, ConditionalDocumentType, DocumentTypes, DocumentValidation } from '../../../src/utils/custom-validations.service';
 import { gender } from '../enums/gender.enum';
 import { maritalStatus } from '../enums/marital-status.enum';
+import { userType } from '../enums/user-type.enum';
 
 class PhoneDto {
   @IsNotEmpty()
@@ -140,4 +141,12 @@ export class UserUpdateDto {
   @IsNotEmpty()
   @IsString()
   uid: string;
+
+  @IsOptional()
+  @IsNumber()
+  idInt: number;
+
+  @IsOptional()
+  @IsEnum(userType)
+  type: userType;
 }
