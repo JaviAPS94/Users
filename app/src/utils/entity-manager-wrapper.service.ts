@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import * as _ from "lodash";
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { EntityManager } from 'typeorm';
 import { DynamicFilterDto } from '../../src/users/dto/dynamic-filter.dto';

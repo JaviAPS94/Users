@@ -17,13 +17,13 @@ export const Birthdate = (account: string, document: string, validationOptions?:
   };
 }
 
-export const AlreadyExistPhoneNumber = (userType: string, validationOptions?: ValidationOptions) => {
+export const AlreadyExistPhoneNumber = (userTypePhoneValidation: string, validationOptions?: ValidationOptions) => {
   return (object: any, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
       propertyName,
       options: validationOptions,
-      constraints: [userType],
+      constraints: [userTypePhoneValidation],
       validator: AlreadyExistPhoneNumberConstraint,
     });
   };

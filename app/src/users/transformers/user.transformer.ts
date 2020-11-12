@@ -106,7 +106,7 @@ export class UserTransformer {
   }
 
   public transformGenericUser = (user: User, countryId: number) => {
-    const document = user.documentByUser.find(document => document.countryId === countryId);
+    const document = user.documentByUser.find(documentByUserTransform => documentByUserTransform.countryId === countryId);
     const transformGenericUser = {
       idInt: user.id,
       birthdate: moment(user.birthdate).format("Y-MM-DD"),
