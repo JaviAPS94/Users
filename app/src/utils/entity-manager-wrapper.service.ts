@@ -91,10 +91,10 @@ export class EntityManagerWrapperService {
     let users = await this.connection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.documentByUser", "document")
-      .andWhere("document.countryId = :countryId", { countryId: dynamicFilterDto.countryId });
+      //.andWhere("document.countryId = :countryId", { countryId: dynamicFilterDto.countryId });
 
-    users = (dynamicFilterDto.name === "document") ? users = users.andWhere("document.document = :document", { document: dynamicFilterDto.value })
-      : users.andWhere(`${userFieldToSearch} like :value`, { value: "%" + dynamicFilterDto.value + "%" });
+    users = (dynamicFilterDto.name === "document") ? users = users.andWhere("document.document IN (:value)", { value: dynamicFilterDto.value })
+      : users.andWhere(`${userFieldToSearch} IN (:value)`, { value: dynamicFilterDto.value });
 
     return users.getMany();
   }
@@ -123,15 +123,11 @@ export class EntityManagerWrapperService {
     return user;
   }
 
-  public async findUserByUidAndCountry(uid: string, countryId: number) {
+  public async findUserByUidAndCountry(uid: string) {
     let user = await this.connection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.documentByUser", "document")
-      .where("user.uid = :uid", { uid })
-
-    if (!_.isUndefined(countryId)) {
-      user = user.andWhere("document.countryId = :countryId", { countryId });
-    }
+      .where("user.uid = :uid", { uid });
 
     return user.getOne();
   }
@@ -143,7 +139,6 @@ export class EntityManagerWrapperService {
       .leftJoinAndSelect("user.shippingAddressByUser", "shippingAddressByUser")
       .leftJoinAndSelect("user.documentByUser", "document")
       .where("user.uid = :uid", { uid })
-      .andWhere("document.countryId = :countryId", { countryId: findUserBillingShippingDto.countryId })
       .andWhere("billingDataByUser.id = :billing", { billing: findUserBillingShippingDto.billing })
       .andWhere("shippingAddressByUser.id = :shipping", { shipping: findUserBillingShippingDto.shipping })
       .getOne();

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class DynamicFilterDto {
   @IsNotEmpty()
@@ -6,8 +6,8 @@ export class DynamicFilterDto {
   name: string;
 
   @IsNotEmpty()
-  @IsString()
-  value: string;
+  @IsArray()
+  value: any[];
 
   @IsNotEmpty()
   @IsNumber()

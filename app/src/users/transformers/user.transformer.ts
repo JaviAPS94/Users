@@ -42,8 +42,8 @@ export class UserTransformer {
     return transformedNamesObject;
   }
 
-  public transformUserWithDocumentByCountry = (user: User) => {
-    const transformedNamesObjectUserWithDocumentByCountry = this.transformGenericUser(user);
+  public transformUserWithDocumentByCountry = (user: User, countryId: number) => {
+    const transformedNamesObjectUserWithDocumentByCountry = this.transformGenericUser(user, countryId);
 
     delete user.createdAt;
     delete user.updatedAt;
@@ -57,7 +57,7 @@ export class UserTransformer {
     return transformedNamesObjectUserWithDocumentByCountry;
   }
 
-  public transformUserWithBillingAndShipping = (user: User) => {
+  public transformUserWithBillingAndShipping = (user: User, countryId: number) => {
     const transformedNamesObjectUserWithShippingAndBilling = {
       billingAddress: {
         idInt: user.billingDataByUser[0].id,
@@ -77,7 +77,7 @@ export class UserTransformer {
       }
     };
 
-    Object.assign(transformedNamesObjectUserWithShippingAndBilling, this.transformGenericUser(user));
+    Object.assign(transformedNamesObjectUserWithShippingAndBilling, this.transformGenericUser(user, countryId));
 
     delete user.billingDataByUser[0].createdAt;
     delete user.billingDataByUser[0].updatedAt;
@@ -105,7 +105,8 @@ export class UserTransformer {
     return transformedNamesObjectUserWithShippingAndBilling;
   }
 
-  public transformGenericUser = (user: User) => {
+  public transformGenericUser = (user: User, countryId: number) => {
+    const document = user.documentByUser.find(document => document.countryId === countryId);
     const transformGenericUser = {
       idInt: user.id,
       birthdate: moment(user.birthdate).format("Y-MM-DD"),
@@ -115,8 +116,8 @@ export class UserTransformer {
         user.additionalInfo.shoppingCart : null,
       totalCoupons: (user.additionalInfo && user.additionalInfo.totalCoupons) ?
         user.additionalInfo.totalCoupons : null,
-      documentType: (user.documentByUser.length > 0) ? user.documentByUser[0].documentType : null,
-      document:(user.documentByUser.length > 0) ? user.documentByUser[0].document : null,
+      documentType: (!_.isUndefined(document)) ? document.documentType : null,
+      document: (!_.isUndefined(document)) ? document.document : null,
       reasonDisabled: (user.additionalInfo && user.additionalInfo.reasonDisabled) ?
         user.additionalInfo.reasonDisabled : null,
       registered: (user.additionalInfo && user.additionalInfo.registered) ?

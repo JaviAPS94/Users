@@ -47,13 +47,13 @@ export class UserController {
   @Get()
   async find(
     @Query('uid') uid: string,
-    @Query('account') account: number,
-    @Query('countryId') countryId: number
+    @Query('account') account: string,
+    @Query('countryId') countryId: string
   ) {
     let result;
     try {
-      const user = await this.userService.getUser(uid, account, countryId);
-      result = (!_.isUndefined(user)) ? this.userTransformer.transformUserWithDocumentByCountry(user) : undefined;
+      const user = await this.userService.getUser(uid, parseInt(account));
+      result = (!_.isUndefined(user)) ? this.userTransformer.transformUserWithDocumentByCountry(user, parseInt(countryId)) : undefined;
     }
     catch (error) {
       throw new HttpException({
@@ -78,45 +78,34 @@ export class UserController {
     try {
       const dynamicFilterDto: DynamicFilterDto = {
         name: findUserDto.parameter.name,
-        value: findUserDto.parameter.value,
+        value: [findUserDto.parameter.value],
         account: findUserDto.account,
         countryId: findUserDto.countryId
       };
-      const user = await this.userService.getUsersByDynamicFilter(dynamicFilterDto);
-      result = (user.length > 0) ? this.userTransformer.transformUserWithDocumentByCountry(user[0]) : undefined;
+      const users = await this.userService.getUsersByDynamicFilter(dynamicFilterDto);
+      result = (users.length > 0) ? users.map((user) => { return this.userTransformer.transformUserWithDocumentByCountry(user, dynamicFilterDto.countryId) }) : [];
     }
     catch (error) {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
         error: 'An error ocurred retrieving the data ' + error.message,
       }, HttpStatus.FORBIDDEN);
-    }
-    if (_.isUndefined(result)) {
-      throw new HttpException({
-        status: HttpStatus.NOT_FOUND,
-        error: 'No users for this filters',
-      }, HttpStatus.NOT_FOUND);
     }
     return result;
   }
 
-  @Get('/dynamic-filter')
-  async findUsersByDynamicFilter(@Query() dynamicFilterDto: DynamicFilterDto) {
+  @Post('/dynamic-filter')
+  async findUsersByDynamicFilter(@Body() dynamicFilterDto: DynamicFilterDto) {
     let result;
     try {
-      result = await this.userService.getUsersByDynamicFilter(dynamicFilterDto);
+      const users = await this.userService.getUsersByDynamicFilter(dynamicFilterDto);
+      result = (users.length > 0) ? users.map((user) => { return this.userTransformer.transformUserWithDocumentByCountry(user, dynamicFilterDto.countryId) }) : [];
     }
     catch (error) {
       throw new HttpException({
         status: HttpStatus.FORBIDDEN,
         error: 'An error ocurred retrieving the data ' + error.message,
       }, HttpStatus.FORBIDDEN);
-    }
-    if (result.length === 0) {
-      throw new HttpException({
-        status: HttpStatus.NOT_FOUND,
-        error: 'No users for this filters',
-      }, HttpStatus.NOT_FOUND);
     }
     return result;
   }
@@ -126,7 +115,7 @@ export class UserController {
     let result;
     try {
       const user = await this.userService.getUserWithBillingAndShipping(uid, findUserBillingShippingDto);
-      result = (!_.isUndefined(user)) ? this.userTransformer.transformUserWithBillingAndShipping(user) : undefined;
+      result = (!_.isUndefined(user)) ? this.userTransformer.transformUserWithBillingAndShipping(user, parseInt(findUserBillingShippingDto.countryId)) : undefined;
     }
     catch (error) {
       throw new HttpException({

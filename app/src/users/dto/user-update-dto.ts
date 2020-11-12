@@ -66,7 +66,7 @@ export class UserUpdateDto {
   @IsString()
   secondLastname: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEmail()
   email: string;
 

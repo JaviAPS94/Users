@@ -69,7 +69,7 @@ export class UserDto {
   @IsString()
   normalizedName?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEmail()
   email: string;
 
@@ -81,10 +81,10 @@ export class UserDto {
   @IsObject()
   additionalEmail?: any;
 
-  @IsNotEmpty()
+  @IsOptional()
   @ValidateNested()
-  @AlreadyExistPhoneNumber('type')
   @Type(() => PhoneDto)
+  @AlreadyExistPhoneNumber('type')
   phone: PhoneDto;
 
   @IsOptional()

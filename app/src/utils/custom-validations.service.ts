@@ -1,8 +1,8 @@
 import { registerDecorator, ValidationArguments, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import * as _ from "lodash";
 import * as moment from "moment";
-import { userType } from '../../src/users/enums/user-type.enum';
 import { getManager } from 'typeorm';
+import { userType } from '../../src/users/enums/user-type.enum';
 import { EntityManagerWrapperService } from './entity-manager-wrapper.service';
 
 export const Birthdate = (account: string, document: string, validationOptions?: ValidationOptions) => {
@@ -103,8 +103,9 @@ export class ConditionalDocumentConstraint implements ValidatorConstraintInterfa
   }
 
   async validConditionalDocument(value: any, uid: string, countryId: number, connection: EntityManagerWrapperService) {
-    const currentDocument = await connection.findUserByUidAndCountry(uid, countryId);
-    return (!_.isUndefined(currentDocument)) ? ((currentDocument.documentByUser[0].document === value) ? true : false)
+    const user = await connection.findUserByUidAndCountry(uid);
+    const currentDocument = user.documentByUser.find(document => document.countryId === countryId);
+    return (!_.isUndefined(currentDocument)) ? ((currentDocument.document === value) ? true : false)
       : true;
   }
 }
@@ -123,9 +124,9 @@ export class ConditionalDocumentTypeConstraint implements ValidatorConstraintInt
   }
 
   async validConditionalDocumentType(value: any, uid: string, countryId: number, connection: EntityManagerWrapperService) {
-    const currentDocument = await connection.findUserByUidAndCountry(uid, countryId);
-
-    return (!_.isUndefined(currentDocument)) ? ((currentDocument.documentByUser[0].documentType === value) ? true : false)
+    const user = await connection.findUserByUidAndCountry(uid);
+    const currentDocument = user.documentByUser.find(document => document.countryId === countryId);
+    return (!_.isUndefined(currentDocument)) ? ((currentDocument.documentType === value) ? true : false)
       : true;
   }
 }

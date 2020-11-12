@@ -42,7 +42,7 @@ export class User {
   @Column({ nullable: true })
   normalizedName: string;
 
-  @Column()
+  @Column({ nullable: true })
   email: string;
 
   @Column({ nullable: true })
@@ -51,7 +51,7 @@ export class User {
   @Column("json", { nullable: true })
   additionalEmail: any;
 
-  @Column("json", { nullable: false })
+  @Column("json", { nullable: true })
   phone: any;
 
   @Column("json", { nullable: true })

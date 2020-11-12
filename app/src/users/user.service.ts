@@ -67,14 +67,14 @@ export class UserService {
     return await this.update(userDto, connection);
   }
 
-  public async getUser(uid: string, account: number, countryId: number) {
+  public async getUser(uid: string, account: number) {
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.findUserByUidAndCountry(uid, countryId, wraperService);
+    return await this.findUserByUidAndCountry(uid, wraperService);
   }
 
-  public async findUserByUidAndCountry(uid: string, countryId: number, connection: EntityManagerWrapperService) {
+  public async findUserByUidAndCountry(uid: string, connection: EntityManagerWrapperService) {
     try {
-      return await connection.findUserByUidAndCountry(uid, countryId);
+      return await connection.findUserByUidAndCountry(uid);
     }
     catch (error) {
       console.log("ERROR: UserByUidAndCountry Find error: " + error.message);
