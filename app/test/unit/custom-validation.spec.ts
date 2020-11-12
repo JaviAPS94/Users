@@ -1,3 +1,5 @@
+import { mockUser } from '../mock-user';
+import { userType } from '../../src/users/enums/user-type.enum';
 import { AlreadyExistDocumentConstraint, AlreadyExistPhoneNumberConstraint, BirthdateConstraint, ConditionalDocumentConstraint, ConditionalDocumentTypeConstraint, customValidation, DocumentTypesConstraint, DocumentValidationConstraint } from '../../src/utils/custom-validations.service';
 import { EntityManagerWrapperService } from '../../src/utils/entity-manager-wrapper.service';
 import { mockCustomValidator } from '../../test/mock-custom-validator';
@@ -106,7 +108,7 @@ describe('Custom Validation', () => {
     it('should return true if validation of alreadyExistPhoneNumberConstraint is successfull', async () => {
       mockFindUserByPhoneNumber();
       const wrapperService = new EntityManagerWrapperService();
-      const result = await alreadyExistPhoneNumberConstraint.validPhoneNumber("0958632589", wrapperService);
+      const result = await alreadyExistPhoneNumberConstraint.validPhoneNumber("0958632589", userType.NORMAL, wrapperService);
       expect(result).toBe(true);
     });
 
@@ -120,7 +122,7 @@ describe('Custom Validation', () => {
     it('should return true if validation of conditionalDocumentType is successfull', async () => {
       mockFindUserByUidAndCountry();
       const wrapperService = new EntityManagerWrapperService();
-      const result = await conditionalDocumentTypeConstraint.validConditionalDocumentType("1719711176", "test", 1, wrapperService);
+      const result = await conditionalDocumentTypeConstraint.validConditionalDocumentType("CI", "test", 1, wrapperService);
       expect(result).toBe(true);
     });
 
@@ -154,7 +156,7 @@ const mockFindUserByPhoneNumber = () => {
 
 const mockFindUserByUidAndCountry = () => {
   const findUserByUidAndCountry = EntityManagerWrapperService.prototype.findUserByUidAndCountry = jest.fn();
-  findUserByUidAndCountry.mockReturnValue(undefined);
+  findUserByUidAndCountry.mockReturnValue(mockUser.entityUsersWithDocument[0]);
 }
 
 const mockFindProperties = () => {

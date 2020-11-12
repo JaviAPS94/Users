@@ -143,5 +143,5 @@ export class UserDto {
 
   @IsOptional()
   @IsEnum(userType)
-  type: userType;
+  type?: userType;
 }

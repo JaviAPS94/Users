@@ -148,5 +148,5 @@ export class UserUpdateDto {
 
   @IsOptional()
   @IsEnum(userType)
-  type: userType;
+  type?: userType;
 }

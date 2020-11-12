@@ -83,11 +83,10 @@ describe('UserService', () => {
   it('should return a user by uid and country', async () => {
     mockFindUserByUidAndCountry();
     const userUid = "test";
-    const countryId = 1;
     const expectedResult = mockUser.entityUsers[0];
 
     const wrapperService = new EntityManagerWrapperService();
-    const result = await userService.findUserByUidAndCountry(userUid, countryId, wrapperService);
+    const result = await userService.findUserByUidAndCountry(userUid, wrapperService);
 
     expect(result).toEqual(expectedResult);
   });
@@ -99,7 +98,7 @@ describe('UserService', () => {
     const wrapperService = new EntityManagerWrapperService();
 
     try {
-      await userService.findUserByUidAndCountry(userUid, countryId, wrapperService);
+      await userService.findUserByUidAndCountry(userUid, wrapperService);
     } catch (error) {
       expect(error.message).toContain('UserByUidAndCountry Find error:');
       expect(error).toBeInstanceOf(Error);
@@ -171,7 +170,7 @@ describe('UserService', () => {
 
     const dynamicFilterDto: DynamicFilterDto = {
       name: "name",
-      value: "test",
+      value: ["test"],
       account: 1,
       countryId: 1
     };
@@ -186,7 +185,7 @@ describe('UserService', () => {
     mockFindUserByDynamicFilterFailure();
     const dynamicFilterDto: DynamicFilterDto = {
       name: "name",
-      value: "test",
+      value: ["test"],
       account: 1,
       countryId: 1
     };

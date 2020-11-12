@@ -82,8 +82,8 @@ describe('User Controller', () => {
     getUser.mockReturnValue(mockUser.entityUsersWithDocument[0]);
     const expectedResult = mockUser.userResponseOldVersion[0];
     const uid = '132';
-    const account = 1;
-    const countryId = 1;
+    const account = '1';
+    const countryId = '1';
 
     const returnedValue = await userController.find(uid, account, countryId);
     expect(getUser).toHaveBeenCalled();
@@ -98,8 +98,8 @@ describe('User Controller', () => {
     expect.assertions(3);
 
     const uid = '132';
-    const account = 1;
-    const countryId = 1;
+    const account = '1';
+    const countryId = '1';
 
     try {
       await userController.find(uid, account, countryId);
@@ -116,8 +116,8 @@ describe('User Controller', () => {
     expect.assertions(3);
 
     const uid = '132';
-    const account = 1;
-    const countryId = 1;
+    const account = '1';
+    const countryId = '1';
 
     try {
       await userController.find(uid, account, countryId);
@@ -131,7 +131,7 @@ describe('User Controller', () => {
   it('POST should return 200 when get user is OK in findUser EP', async () => {
     const getUsersByDynamicFilter = UserService.prototype.getUsersByDynamicFilter = jest.fn();
     getUsersByDynamicFilter.mockReturnValue(mockUser.usersInFindUserEP);
-    const expectedResult = mockUser.userResponseOldVersion[0];
+    const expectedResult = [mockUser.userResponseOldVersion[0]];
     const findUserDto: FindUserDto = {
       parameter: {
         name: "test",
@@ -171,36 +171,13 @@ describe('User Controller', () => {
     }
   });
 
-  it('POST should return 404 when it cannnot retrieve data in findUser EP', async () => {
-    const getUsersByDynamicFilter = UserService.prototype.getUsersByDynamicFilter = jest.fn();
-    getUsersByDynamicFilter.mockReturnValue([]);
-    expect.assertions(3);
-
-    const findUserDto: FindUserDto = {
-      parameter: {
-        name: "test",
-        value: "test",
-      },
-      account: 1,
-      countryId: 1
-    };
-
-    try {
-      await userController.findUsers(findUserDto);
-    } catch (error) {
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.response.error).toContain('No users for this filters');
-      expect(error.status).toBe(HttpStatus.NOT_FOUND);
-    }
-  });
-
   it('GET should return 200 when get user is OK in findUsersByDynamicFilter EP', async () => {
     const getUsersByDynamicFilter = UserService.prototype.getUsersByDynamicFilter = jest.fn();
     getUsersByDynamicFilter.mockReturnValue(mockUser.entityUsers);
-    const expectedResult = mockUser.entityUsers;
+    const expectedResult = mockUser.userResponseDynamicFilter;
     const dynamicFilterDto: DynamicFilterDto = {
       name: "test",
-      value: "test",
+      value: ["test"],
       account: 1,
       countryId: 1
     };
@@ -219,7 +196,7 @@ describe('User Controller', () => {
 
     const dynamicFilterDto: DynamicFilterDto = {
       name: "test",
-      value: "test",
+      value: ["test"],
       account: 1,
       countryId: 1
     };
@@ -230,27 +207,6 @@ describe('User Controller', () => {
       expect(error).toBeInstanceOf(HttpException);
       expect(error.response.error).toContain('An error ocurred retrieving the data');
       expect(error.status).toBe(HttpStatus.FORBIDDEN);
-    }
-  });
-
-  it('GET should return 404 when it cannnot retrieve data in findUsersByDynamicFilter EP', async () => {
-    const getUsersByDynamicFilter = UserService.prototype.getUsersByDynamicFilter = jest.fn();
-    getUsersByDynamicFilter.mockReturnValue([]);
-    expect.assertions(3);
-
-    const dynamicFilterDto: DynamicFilterDto = {
-      name: "test",
-      value: "test",
-      account: 1,
-      countryId: 1
-    };
-
-    try {
-      await userController.findUsersByDynamicFilter(dynamicFilterDto);
-    } catch (error) {
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.response.error).toContain('No users for this filters');
-      expect(error.status).toBe(HttpStatus.NOT_FOUND);
     }
   });
 

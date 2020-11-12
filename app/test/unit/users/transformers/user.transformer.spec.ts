@@ -24,7 +24,7 @@ describe('UserTransformer', () => {
     it ('should return user generic transformed', async () => {
       const user = new User();
       Object.assign(user, mockUser.entityUsersWithDocumentForTransformer[0]);
-      const response = userTransformer.transformGenericUser(user);
+      const response = userTransformer.transformGenericUser(user, 1);
       expect(response).toEqual(mockUser.userGenericTransformResponse[0]);
     })
   });

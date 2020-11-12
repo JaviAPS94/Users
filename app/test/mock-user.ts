@@ -29,7 +29,8 @@ export const mockUser = {
       email: "test@test.com",
       country: {
         id: 1
-      }
+      },
+      idInt: 1
     }
   ],
   usersE2E: [
@@ -70,8 +71,8 @@ export const mockUser = {
       name: 'Alexis',
       middleName: 'Javier',
       lastname: 'Pinaida',
-      secondLastName: 'Simbaña',
-      nickName: null,
+      secondLastname: 'Simbaña',
+      nickname: null,
       normalizedName: null,
       email: 'test@test.com',
       additionalEmail: null,
@@ -91,7 +92,19 @@ export const mockUser = {
       lastDateOfActivity: null,
       createdAt: "2020-10-16T20:30:55.578Z",
       updatedAt: "2020-10-16T20:32:36.000Z",
-      deleteAt: null
+      deleteAt: null,
+      documentByUser:
+        [{
+          id: 1,
+          document: '1719711176',
+          documentType: 'CI',
+          accountId: 1,
+          countryId: 1,
+          userId: 1,
+          createdAt: "2020-10-26T02:57:43.655Z",
+          updatedAt: "2020-10-26T02:57:43.655Z",
+          deleteAt: null
+        }]
     }
   ],
   userResponseOldVersion: [
@@ -851,6 +864,48 @@ export const mockUser = {
       createdAt: '2020-10-16 20:30:55',
       updatedAt: '2020-10-16 20:30:55',
       externalUpdateAt: 'test'
+    }
+  ],
+  userResponseDynamicFilter: [
+    {
+      idInt: 1,
+      birthdate: "1994-05-01",
+      referredCode: null,
+      shoppingCart: null,
+      totalCoupons: null,
+      documentType: "CI",
+      document: "1719711176",
+      reasonDisabled: null,
+      registered: false,
+      createdAt: "2020-10-16 20:30:55",
+      updatedAt: "2020-10-16 20:32:36",
+      externalUpdateAt: null,
+      uid: "test",
+      vendorId: 1,
+      externalId: "1234",
+      name: "Alexis",
+      middleName: "Javier",
+      lastname: "Pinaida",
+      secondLastname: "Simbaña",
+      nickname: null,
+      normalizedName: null,
+      email: "test@test.com",
+      additionalEmail: null,
+      phone: {
+        number: "0958963172",
+        countryCode: "593",
+        countryIsoCode: "EC"
+      },
+      additionalPhone: null,
+      code: "ALEPIN132",
+      maritalStatus: "MARRIED",
+      gender: "MALE",
+      facebookId: null,
+      whatsappId: null,
+      additionalInfo: null,
+      active: 1,
+      origin: "WEB",
+      lastDateOfActivity: null
     }
   ]
 };
