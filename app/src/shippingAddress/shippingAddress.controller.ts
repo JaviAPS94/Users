@@ -50,12 +50,7 @@ export class ShippingAddressController {
         error: 'An error ocurred retrieving the data ' + error.message,
       }, HttpStatus.FORBIDDEN);
     }
-    if (result.data.length === 0) {
-      throw new HttpException({
-        status: HttpStatus.NOT_FOUND,
-        error: 'No shipping address for user with uid: ' + uid,
-      }, HttpStatus.NOT_FOUND);
-    }
+
     return result;
   }
 

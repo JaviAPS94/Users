@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, UsePipes } from '@nestjs/common';
+import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import { BillingDataService } from './billingData.service';
 import { BillingDataDto } from './dto/billing-data.dto';
 import { orderByEnum } from './enums/order-by.enum';
@@ -11,8 +12,10 @@ export class BillingDataController {
     private readonly billingDataTransformer: BillingDataTransformer) { }
 
   @Post()
+  // @UsePipes(new ValidationPipe())
   async create(@Body() billingDataDto: BillingDataDto) {
     try {
+      console.log('entre', billingDataDto);
       const billingData = await this.billingDataService.saveBillingData(billingDataDto);
       return this.billingDataTransformer.transformBillingData(billingData);
     }
@@ -63,12 +66,6 @@ export class BillingDataController {
         status: HttpStatus.FORBIDDEN,
         error: 'An error ocurred retrieving the data ' + error.message,
       }, HttpStatus.FORBIDDEN);
-    }
-    if (result.data.length === 0) {
-      throw new HttpException({
-        status: HttpStatus.NOT_FOUND,
-        error: 'No billing data for user with uid: ' + uid,
-      }, HttpStatus.NOT_FOUND);
     }
     return result;
   }

@@ -1,4 +1,12 @@
-import { ArgumentMetadata, Injectable, PipeTransform, UnprocessableEntityException } from '@nestjs/common';
+import {
+  ArgumentMetadata,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Injectable,
+  PipeTransform,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
 
@@ -10,21 +18,43 @@ export class ValidationPipe implements PipeTransform<any> {
     }
     const object = plainToClass(metatype, value);
     const errors = await validate(object);
-    const responseErrors = errors.map(error => {
+    const responseErrors = this.transformError(errors);
+
+    if (responseErrors.length > 0) {
+      throw new HttpException(
+        {
+          code: HttpStatus.BAD_REQUEST,
+          message: 'Error de Validacion',
+          status: 'error',
+          warning: responseErrors,
+          error: [],
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return value;
+  }
+
+  private transformError(errors: any) {
+    return errors.map(error => {
       return {
         field: error.property,
-        constraints: (error.children.length > 0) ? error.children.map(childrenError => {
-          return {
-            field: childrenError.property,
-            constraints: childrenError.constraints
-          }
-        }) : error.constraints
-      }
-    })
-    if (responseErrors.length > 0) {
-      throw new UnprocessableEntityException(responseErrors);
+        code: null,
+        value: this.transformItemError(error.constraints),
+        constraints:
+          error.children.length > 0
+            ? this.transformError(error.children)
+            : error.constraints,
+      };
+    });
+  }
+  private transformItemError(constraints: any) {
+    let message = '';
+    for (const key in constraints) {
+      message += constraints[key];
     }
-    return value;
+    return message;
   }
 
   private toValidate(metatype: Function): boolean {
