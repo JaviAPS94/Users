@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, UsePipes } from '@nestjs/common';
-import { ValidationPipe } from 'src/common/pipes/validation.pipe';
 import { BillingDataService } from './billingData.service';
 import { BillingDataDto } from './dto/billing-data.dto';
 import { orderByEnum } from './enums/order-by.enum';
@@ -12,7 +11,6 @@ export class BillingDataController {
     private readonly billingDataTransformer: BillingDataTransformer) { }
 
   @Post()
-  // @UsePipes(new ValidationPipe())
   async create(@Body() billingDataDto: BillingDataDto) {
     try {
       console.log('entre', billingDataDto);
