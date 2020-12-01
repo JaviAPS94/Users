@@ -30,8 +30,10 @@ export class ShippingAddressService {
       shippingAddressToCreate.user = user;
       if (shippingAddress.default === true) {
         const defaultShippingAddress = await connection.findDefaultShippingAddressByUser(user.id);
-        defaultShippingAddress.default = false;
-        await connection.save(defaultShippingAddress);
+        if (!_.isEmpty(defaultShippingAddress)) {
+          defaultShippingAddress.default = false;
+          await connection.save(defaultShippingAddress);
+        }
       }
       const shippingAddressReturned = await connection.save(shippingAddressToCreate);
       return shippingAddressReturned;
@@ -54,8 +56,10 @@ export class ShippingAddressService {
       Object.assign(shippingAddress, shippingAddressForUpdateDto);
       if (shippingAddressForUpdateDto.default === true) {
         const defaultShippingAddress = await connection.findDefaultShippingAddressByUser(shippingAddress.userId);
-        defaultShippingAddress.default = false;
-        await connection.save(defaultShippingAddress);
+        if (!_.isEmpty(defaultShippingAddress)) {
+          defaultShippingAddress.default = false;
+          await connection.save(defaultShippingAddress);
+        }
       }
       return await connection.save(shippingAddress);
     }

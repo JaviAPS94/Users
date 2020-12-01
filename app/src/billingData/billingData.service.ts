@@ -32,8 +32,10 @@ export class BillingDataService {
       }
       if (billingData.default === true) {
         const defaultBillingData = await connection.findDefaultBillingByUser(user.id);
-        defaultBillingData.default = false;
-        await connection.save(defaultBillingData);
+        if (!_.isEmpty(defaultBillingData)) {
+          defaultBillingData.default = false;
+          await connection.save(defaultBillingData);
+        }
       }
       
       billingDataToCreate.user = user;
@@ -57,8 +59,10 @@ export class BillingDataService {
       }
       if (billingDataForUpdateDto.default === true) {
         const defaultBillingData = await connection.findDefaultBillingByUser(billingData.userId);
-        defaultBillingData.default = false;
-        await connection.save(defaultBillingData);
+        if (!_.isEmpty(defaultBillingData)) {
+          defaultBillingData.default = false;
+          await connection.save(defaultBillingData);
+        }
       }
       Object.assign(billingData, billingDataForUpdateDto);
       return await connection.save(billingData);
