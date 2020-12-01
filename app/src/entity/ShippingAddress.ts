@@ -23,7 +23,7 @@ export class ShippingAddress {
   sector: JSON;
 
   @Column({ type: "tinyint", nullable: true })
-  default: number;
+  default: boolean;
 
   @Column({ type: "decimal", nullable: true, precision: 16, scale: 13 })
   lat: number;

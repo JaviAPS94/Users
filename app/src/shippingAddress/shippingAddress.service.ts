@@ -28,6 +28,11 @@ export class ShippingAddressService {
         throw new Error('ShippingAddress needs a VALID uid');
       }
       shippingAddressToCreate.user = user;
+      if (shippingAddress.default === true) {
+        const defaultShippingAddress = await connection.findDefaultShippingAddressByUser(user.id);
+        defaultShippingAddress.default = false;
+        await connection.save(defaultShippingAddress);
+      }
       const shippingAddressReturned = await connection.save(shippingAddressToCreate);
       return shippingAddressReturned;
     } catch (error) {
@@ -47,6 +52,11 @@ export class ShippingAddressService {
         throw new Error('ShippingAddress needs a VALID id');
       }
       Object.assign(shippingAddress, shippingAddressForUpdateDto);
+      if (shippingAddressForUpdateDto.default === true) {
+        const defaultShippingAddress = await connection.findDefaultShippingAddressByUser(shippingAddress.userId);
+        defaultShippingAddress.default = false;
+        await connection.save(defaultShippingAddress);
+      }
       return await connection.save(shippingAddress);
     }
     catch (error) {

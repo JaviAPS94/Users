@@ -30,11 +30,12 @@ export class BillingDataService {
       if (_.isEmpty(user)) {
         throw new Error('BillingData needs a VALID uid');
       }
-      const defaultBillingData = await connection.findDefaultBillingByUser(user.id);
-      if (!_.isUndefined(defaultBillingData)) {
+      if (billingData.default === true) {
+        const defaultBillingData = await connection.findDefaultBillingByUser(user.id);
         defaultBillingData.default = false;
         await connection.save(defaultBillingData);
       }
+      
       billingDataToCreate.user = user;
       const billingDataReturned = await connection.save(billingDataToCreate);
       return billingDataReturned;

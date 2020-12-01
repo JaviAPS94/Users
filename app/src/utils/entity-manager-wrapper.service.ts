@@ -152,4 +152,12 @@ export class EntityManagerWrapperService {
       .getOne();
     return billingData;
   }
+  public async findDefaultShippingAddressByUser(userId: number) {
+    const shippingAddress = await this.connection.getRepository(ShippingAddress)
+      .createQueryBuilder("shipping-address")
+      .where("shipping-address.default = 1")
+      .andWhere("shipping-address.userId = :userId", { userId })
+      .getOne();
+    return shippingAddress;
+  }
 }

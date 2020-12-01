@@ -1,3 +1,4 @@
+import { boolean } from "joi";
 import { Pagination } from "nestjs-typeorm-paginate";
 import { BillingData } from "../../../src/entity/BillingData";
 
@@ -11,6 +12,7 @@ export class BillingDataTransformer {
     delete billingData.updatedAt;
     delete billingData.deleteAt;
     delete billingData.user;
+    billingData.default = billingData.default ? true : false;
 
     Object.assign(transformedNamesObject, billingData)
 

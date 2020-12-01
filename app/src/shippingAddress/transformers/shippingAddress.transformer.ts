@@ -11,6 +11,9 @@ export class ShippingAddressTransformer {
     delete shippingAddres.createdAt;
     delete shippingAddres.deleteAt;
     delete shippingAddres.user;
+    shippingAddres.lat = parseFloat(shippingAddres.lat + '');
+    shippingAddres.lng = parseFloat(shippingAddres.lng + '');
+    shippingAddres.default = shippingAddres.default ? true : false;
 
     Object.assign(transformedNamesObject, shippingAddres)
 
