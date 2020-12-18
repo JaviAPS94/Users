@@ -99,7 +99,8 @@ export class ConditionalDocumentConstraint implements ValidatorConstraintInterfa
   }
 
   defaultMessage(args: ValidationArguments) {
-    return "The document is invalid";
+    //TODO: it is showing in multimarca's app, is neccesary apply translation
+    return "Número de documento inválido";
   }
 
   async validConditionalDocument(value: any, uid: string, countryId: number, connection: EntityManagerWrapperService) {
@@ -120,7 +121,8 @@ export class ConditionalDocumentTypeConstraint implements ValidatorConstraintInt
   }
 
   defaultMessage(args: ValidationArguments) {
-    return "The document is invalid";
+    //TODO: it is showing in multimarca app, is neccesary apply translation's
+    return "Número de documento inválido";
   }
 
   async validConditionalDocumentType(value: any, uid: string, countryId: number, connection: EntityManagerWrapperService) {
@@ -206,7 +208,8 @@ export class DocumentValidationConstraint implements ValidatorConstraintInterfac
   }
 
   defaultMessage(args: ValidationArguments) {
-    return "The document is invalid";
+    //TODO: it is showing in multimarca app, is neccesary apply translation's
+    return "Número de documento inválido";
   }
 
   async validDocument(value: any, documentType: string) {
