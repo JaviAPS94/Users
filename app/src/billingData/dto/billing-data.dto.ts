@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsEmail, IsEnum, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { DocumentValidation } from 'src/utils/custom-validations.service';
+import { DocumentValidation } from '../../utils/custom-validations.service';
 import { documentType } from '../enums/document-type.enum';
 
 class CountryDto {
