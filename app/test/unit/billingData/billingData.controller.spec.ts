@@ -92,6 +92,11 @@ describe('BillingData Controller', () => {
 
   it('GET should return 404 when it cannnot retrieve data', async () => {
     const getBillingData = BillingDataService.prototype.getBillingData = jest.fn();
+    const expectedResult = mockBillingData.billingDataPaginatedOldVersion[0];
+    expectedResult.data = [];
+    expectedResult.size = 1;
+    expectedResult.total = 1;
+    expectedResult.page = 1;
     getBillingData.mockReturnValue({
       items: [],
       meta: {
@@ -100,7 +105,6 @@ describe('BillingData Controller', () => {
         currentPage: 1
       }
     });
-    expect.assertions(3);
 
     const uid = '132';
     const page = 1;
@@ -109,13 +113,8 @@ describe('BillingData Controller', () => {
     const sortBy = "name";
     const countryId = "1";
 
-    try {
-      await billingDataController.findBillingData(page, size, countryId, orderBy, sortBy, uid);
-    } catch (error) {
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.response.error).toContain('No billing data for user with uid:');
-      expect(error.status).toBe(HttpStatus.NOT_FOUND);
-    }
+    const returnedValue = await billingDataController.findBillingData(page, size, countryId, orderBy, sortBy, uid);
+    expect(returnedValue).toEqual(expectedResult);
   });
 
   it('GET should return 200 when get billing data is OK', async () => {
