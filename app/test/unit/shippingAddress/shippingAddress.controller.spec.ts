@@ -120,6 +120,12 @@ describe('ShippingAdress Controller', () => {
 
   it('GET should return 404 when it cannnot retrieve data', async () => {
     const getShippingAddress = ShippingAddressService.prototype.getShippingAddress = jest.fn();
+    const expectedResult = mockShippingAddress.shippingAddressPaginatedOldVersion[0];
+    expectedResult.data = [];
+    expectedResult.size = 1;
+    expectedResult.total = 1;
+    expectedResult.page = 1;
+    expectedResult.sortBy = "nickname";
     getShippingAddress.mockReturnValue({
       items: [],
       meta: {
@@ -128,7 +134,6 @@ describe('ShippingAdress Controller', () => {
         currentPage: 1
       }
     });
-    expect.assertions(3);
 
     const uid = '132';
     const page = 1;
@@ -137,13 +142,8 @@ describe('ShippingAdress Controller', () => {
     const sortBy = "nickname";
     const countryId = "1";
 
-    try {
-      await shippingAddressController.findShippingAddress(page, size, countryId, orderBy, sortBy, uid);
-    } catch (error) {
-      expect(error).toBeInstanceOf(HttpException);
-      expect(error.response.error).toContain('No shipping address for user with uid:');
-      expect(error.status).toBe(HttpStatus.NOT_FOUND);
-    }
+    const returnedValue = await shippingAddressController.findShippingAddress(page, size, countryId, orderBy, sortBy, uid);
+    expect(returnedValue).toEqual(expectedResult);
   });
 
   it('GET should return 200 when get shipping address paginated is OK', async () => {

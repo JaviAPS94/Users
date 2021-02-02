@@ -1,9 +1,9 @@
 import {
   ArgumentMetadata,
-  HttpException,
   HttpStatus,
   Injectable,
   PipeTransform,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
@@ -19,7 +19,7 @@ export class ValidationPipe implements PipeTransform<any> {
     const responseErrors = this.transformError(errors);
 
     if (responseErrors.length > 0) {
-      throw new HttpException(
+      throw new UnprocessableEntityException(
         {
           code: HttpStatus.BAD_REQUEST,
           message: 'Error de Validacion',
@@ -27,7 +27,7 @@ export class ValidationPipe implements PipeTransform<any> {
           warning: responseErrors,
           error: [],
         },
-        HttpStatus.BAD_REQUEST,
+        'Error de Validacion',
       );
     }
 
