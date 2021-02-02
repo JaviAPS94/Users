@@ -1,18 +1,21 @@
-import { Injectable } from "@nestjs/common";
-import * as _ from "lodash";
-import { getConnection, getManager, QueryRunner } from "typeorm";
-import { Document } from "../../src/entity/Document";
-import { User } from "../../src/entity/User";
-import { EntityManagerWrapperService } from "../../src/utils/entity-manager-wrapper.service";
-import { DynamicFilterDto } from "./dto/dynamic-filter.dto";
+import { Injectable } from '@nestjs/common';
+import * as _ from 'lodash';
+import { getConnection, getManager, QueryRunner } from 'typeorm';
+import { Document } from '../../src/entity/Document';
+import { User } from '../../src/entity/User';
+import { EntityManagerWrapperService } from '../../src/utils/entity-manager-wrapper.service';
+import { DynamicFilterDto } from './dto/dynamic-filter.dto';
 import { FindUserBillingShippingDto } from './dto/find-user-billing-shipping.dto';
-import { UserUpdateDto } from "./dto/user-update-dto";
-import { UserDto } from "./dto/user.dto";
-import { documentType } from "./enums/document-type.enum";
-import { userType } from "./enums/user-type.enum";
+import { UserUpdateDto } from './dto/user-update-dto';
+import { UserDto } from './dto/user.dto';
+import { documentType } from './enums/document-type.enum';
+import { userType } from './enums/user-type.enum';
+import { MsNotificationProvider } from './../providers/MsNotificationProvider';
 
 @Injectable()
 export class UserService {
+  constructor() // private readonly msNotificationProvider: MsNotificationProvider,
+  {}
 
   async saveUser(user: UserDto) {
     const connection = getConnection().createQueryRunner();
@@ -33,10 +36,21 @@ export class UserService {
     await queryRunner.startTransaction();
 
     try {
-      userToCreate.code = await this.generateUserCode(user.name, user.lastname, user.uid);
-      userToCreate.uid = (user.type === userType.DEPENDENT) ? null : user.uid;
+      userToCreate.code = await this.generateUserCode(
+        user.name,
+        user.lastname,
+        user.uid,
+      );
+      userToCreate.uid = user.type === userType.DEPENDENT ? null : user.uid;
       // execute some operations on this transaction
       const userReturned = await queryRunner.manager.save(userToCreate);
+      const msNotificationProvider = new MsNotificationProvider();
+      await msNotificationProvider.sendEmailWelcome(
+        user.email,
+        user.name,
+        user.uid,
+        user.account,
+      );
 
       if (user.document && user.documentType) {
         const documentToCreate = new Document();
@@ -72,25 +86,29 @@ export class UserService {
     return await this.findUserByUidAndCountry(uid, wraperService);
   }
 
-  public async findUserByUidAndCountry(uid: string, connection: EntityManagerWrapperService) {
+  public async findUserByUidAndCountry(
+    uid: string,
+    connection: EntityManagerWrapperService,
+  ) {
     try {
       return await connection.findUserByUidAndCountry(uid);
-    }
-    catch (error) {
-      console.log("ERROR: UserByUidAndCountry Find error: " + error.message);
-      throw new Error("UserByUidAndCountry Find error: " + error.message);
+    } catch (error) {
+      console.log('ERROR: UserByUidAndCountry Find error: ' + error.message);
+      throw new Error('UserByUidAndCountry Find error: ' + error.message);
     }
   }
 
-  public async findUserByUid(uid: string, connection: EntityManagerWrapperService) {
+  public async findUserByUid(
+    uid: string,
+    connection: EntityManagerWrapperService,
+  ) {
     try {
       return await connection.findUserByUid({
-        where: { uid: `${uid}` }
+        where: { uid: `${uid}` },
       });
-    }
-    catch (error) {
-      console.log("ERROR: UserByUid Find error: " + error.message);
-      throw new Error("UserByUid Find error: " + error.message);
+    } catch (error) {
+      console.log('ERROR: UserByUid Find error: ' + error.message);
+      throw new Error('UserByUid Find error: ' + error.message);
     }
   }
 
@@ -104,22 +122,27 @@ export class UserService {
 
     try {
       // execute some operations on this transaction
-      const user = (!_.isUndefined(userDto.type) && userDto.type === userType.DEPENDENT) ?
-        await queryRunner.manager.findOne(User, {
-          where: { id: `${userDto.idInt}` }
-        })
-        : await queryRunner.manager.findOne(User, {
-          where: { uid: `${userDto.uid}` }
-        });
+      const user =
+        !_.isUndefined(userDto.type) && userDto.type === userType.DEPENDENT
+          ? await queryRunner.manager.findOne(User, {
+              where: { id: `${userDto.idInt}` },
+            })
+          : await queryRunner.manager.findOne(User, {
+              where: { uid: `${userDto.uid}` },
+            });
 
       Object.assign(user, userDto);
-      user.uid = (user.type === userType.DEPENDENT) ? null : user.uid;
+      user.uid = user.type === userType.DEPENDENT ? null : user.uid;
       const userReturned = await queryRunner.manager.save(user);
 
       if (userDto.document && userDto.documentType) {
-        const documentToUpdate = await queryRunner.manager.findOne(Document, {
-          where: { document: `${userDto.document}`, countryId: `${userDto.country.id}` }
-        }) ?? new Document();
+        const documentToUpdate =
+          (await queryRunner.manager.findOne(Document, {
+            where: {
+              document: `${userDto.document}`,
+              countryId: `${userDto.country.id}`,
+            },
+          })) ?? new Document();
 
         documentToUpdate.userId = userReturned.id;
         documentToUpdate.document = userDto.document;
@@ -149,48 +172,75 @@ export class UserService {
     return await this.findUserByDynamicFilter(dynamicFilterDto, wraperService);
   }
 
-  public async findUserByDynamicFilter(dynamicFilterDto: DynamicFilterDto, connection: EntityManagerWrapperService) {
+  public async findUserByDynamicFilter(
+    dynamicFilterDto: DynamicFilterDto,
+    connection: EntityManagerWrapperService,
+  ) {
     try {
       return await connection.findUserByDynamicFilter(dynamicFilterDto);
-    }
-    catch (error) {
-      console.log("ERROR: UserByDynamicFilter Find error: " + error.message);
-      throw new Error("UserByDynamicFilter Find error: " + error.message);
+    } catch (error) {
+      console.log('ERROR: UserByDynamicFilter Find error: ' + error.message);
+      throw new Error('UserByDynamicFilter Find error: ' + error.message);
     }
   }
 
-  public async getUserWithBillingAndShipping(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto) {
+  public async getUserWithBillingAndShipping(
+    uid: string,
+    findUserBillingShippingDto: FindUserBillingShippingDto,
+  ) {
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.findUserByUidWithShippingAndBilling(uid, findUserBillingShippingDto, wraperService);
+    return await this.findUserByUidWithShippingAndBilling(
+      uid,
+      findUserBillingShippingDto,
+      wraperService,
+    );
   }
 
-  public async findUserByUidWithShippingAndBilling(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto, connection: EntityManagerWrapperService) {
+  public async findUserByUidWithShippingAndBilling(
+    uid: string,
+    findUserBillingShippingDto: FindUserBillingShippingDto,
+    connection: EntityManagerWrapperService,
+  ) {
     try {
       const billingData = await connection.findBillingDataById({
-        where: { id: `${findUserBillingShippingDto.billing}` }
+        where: { id: `${findUserBillingShippingDto.billing}` },
       });
       if (_.isEmpty(billingData)) {
-        throw new Error('FindUserByUidAndDocumentByCountry needs a VALID billing id');
+        throw new Error(
+          'FindUserByUidAndDocumentByCountry needs a VALID billing id',
+        );
       }
       const shippingAddress = await connection.findShippingAddressById({
-        where: { id: `${findUserBillingShippingDto.shipping}` }
+        where: { id: `${findUserBillingShippingDto.shipping}` },
       });
       if (_.isEmpty(shippingAddress)) {
-        throw new Error('FindUserByUidAndDocumentByCountry needs a VALID shipping address id');
+        throw new Error(
+          'FindUserByUidAndDocumentByCountry needs a VALID shipping address id',
+        );
       }
-      const user = await connection.findUserByUidWithShippingAndBilling(uid, findUserBillingShippingDto);
+      const user = await connection.findUserByUidWithShippingAndBilling(
+        uid,
+        findUserBillingShippingDto,
+      );
       if (_.isEmpty(user)) {
         throw new Error('FindUserByUidAndDocumentByCountry needs a VALID uid');
       }
       return user;
-    }
-    catch (error) {
-      console.log("ERROR: UserByUidWithBillingAndShipping Find error: " + error.message);
-      throw new Error("UserByUidWithBillingAndShipping Find error: " + error.message);
+    } catch (error) {
+      console.log(
+        'ERROR: UserByUidWithBillingAndShipping Find error: ' + error.message,
+      );
+      throw new Error(
+        'UserByUidWithBillingAndShipping Find error: ' + error.message,
+      );
     }
   }
 
-  public async generateUserCode(firstName: string, lastName: string, uid: string) {
+  public async generateUserCode(
+    firstName: string,
+    lastName: string,
+    uid: string,
+  ) {
     let name = '';
     let lastname = '';
     const nameArr = firstName.trim().split(' ');
@@ -199,8 +249,15 @@ export class UserService {
     name = nameArr.length >= 1 ? nameArr[0] : '';
     lastname = lastnameArr.length >= 1 ? lastnameArr[0] : '';
 
-    let code = name.substring(0, 3) + lastname.substring(0, 3) + uid.substring(0, 5) + uid.substring(7, 9);
+    let code =
+      name.substring(0, 3) +
+      lastname.substring(0, 3) +
+      uid.substring(0, 5) +
+      uid.substring(7, 9);
     code = code.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    return code.trim().replace(/ /g, '').toUpperCase();
+    return code
+      .trim()
+      .replace(/ /g, '')
+      .toUpperCase();
   }
 }
