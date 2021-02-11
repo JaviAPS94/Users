@@ -37,7 +37,7 @@ export const uid = (req: Request, res: Response, next: Function) => {
     }
   }
   if (!_.isUndefined(email)) {
-    if (req.method === "POST" || req.method === "PUT") {
+    if ((req.method === "POST" || req.method === "PUT") && _.isUndefined(req.body.email)) {
       req.body.email = email;
     }
     if (req.method === "GET") {
