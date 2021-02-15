@@ -13,7 +13,6 @@ export class BillingDataController {
   @Post()
   async create(@Body() billingDataDto: BillingDataDto) {
     try {
-      console.log('entre', billingDataDto);
       const billingData = await this.billingDataService.saveBillingData(billingDataDto);
       return this.billingDataTransformer.transformBillingData(billingData);
     }

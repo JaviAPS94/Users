@@ -144,6 +144,17 @@ export class EntityManagerWrapperService {
     return user;
   }
 
+  public async findUserByUidWithShipping(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto) {
+    const user = await this.connection.getRepository(User)
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.shippingAddressByUser", "shippingAddressByUser")
+      .leftJoinAndSelect("user.documentByUser", "document")
+      .where("user.uid = :uid", { uid })
+      .andWhere("shippingAddressByUser.id = :shipping", { shipping: findUserBillingShippingDto.shipping })
+      .getOne();
+    return user;
+  }
+
   public async findDefaultBillingByUser(userId: number) {
     const billingData = await this.connection.getRepository(BillingData)
       .createQueryBuilder("billing-data")

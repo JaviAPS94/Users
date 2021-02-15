@@ -202,13 +202,13 @@ export class UserService {
     connection: EntityManagerWrapperService,
   ) {
     try {
-      const billingData = await connection.findBillingDataById({
-        where: { id: `${findUserBillingShippingDto.billing}` },
-      });
-      if (_.isEmpty(billingData)) {
-        throw new Error(
-          'FindUserByUidAndDocumentByCountry needs a VALID billing id',
-        );
+      if(findUserBillingShippingDto.billing!=""){
+        const billingData = await connection.findBillingDataById({
+          where: { id: `${findUserBillingShippingDto.billing}` }
+        });
+        if (_.isEmpty(billingData)) {
+          throw new Error('FindUserByUidAndDocumentByCountry needs a VALID billing id');
+        }
       }
       const shippingAddress = await connection.findShippingAddressById({
         where: { id: `${findUserBillingShippingDto.shipping}` },
@@ -218,10 +218,12 @@ export class UserService {
           'FindUserByUidAndDocumentByCountry needs a VALID shipping address id',
         );
       }
-      const user = await connection.findUserByUidWithShippingAndBilling(
-        uid,
-        findUserBillingShippingDto,
-      );
+      let user;
+      if (findUserBillingShippingDto.billing!=""){
+        user = await connection.findUserByUidWithShippingAndBilling(uid, findUserBillingShippingDto);
+      } else {
+        user = await connection.findUserByUidWithShipping(uid, findUserBillingShippingDto);
+      }
       if (_.isEmpty(user)) {
         throw new Error('FindUserByUidAndDocumentByCountry needs a VALID uid');
       }
