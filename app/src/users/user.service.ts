@@ -10,11 +10,10 @@ import { UserUpdateDto } from './dto/user-update-dto';
 import { UserDto } from './dto/user.dto';
 import { documentType } from './enums/document-type.enum';
 import { userType } from './enums/user-type.enum';
-import { MsNotificationProvider } from './../providers/MsNotificationProvider';
 
 @Injectable()
 export class UserService {
-  constructor() // private readonly msNotificationProvider: MsNotificationProvider,
+  constructor()
   {}
 
   async saveUser(user: UserDto) {
@@ -44,13 +43,6 @@ export class UserService {
       userToCreate.uid = user.type === userType.DEPENDENT ? null : user.uid;
       // execute some operations on this transaction
       const userReturned = await queryRunner.manager.save(userToCreate);
-      const msNotificationProvider = new MsNotificationProvider();
-      await msNotificationProvider.sendEmailWelcome(
-        user.email,
-        user.name,
-        user.uid,
-        user.account,
-      );
 
       if (user.document && user.documentType) {
         const documentToCreate = new Document();

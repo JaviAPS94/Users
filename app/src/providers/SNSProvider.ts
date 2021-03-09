@@ -21,7 +21,13 @@ export default class SNSProvider {
     const params = {
       Message: JSON.stringify(dataToPublish), /* required */
       TopicArn: this.topicArn,
-      Subject: subject
+      Subject: subject,
+      MessageAttributes: {
+        'event_type': {
+          DataType: 'String', /* required */
+          StringValue: subject
+        },
+      }
     };
 
     // Create promise and SNS service object
