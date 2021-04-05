@@ -133,24 +133,17 @@ export class UserController {
   }
 
   @Get('/findUsers')
-  async findUsersV2(@Query('findBy') findBy: string, @Query() findUserBillingShippingDto: FindUserBillingShippingDto) {
-    let result;
-    // try {
-    //   const user = await this.userService.getUserWithBillingAndShipping(uid, findUserBillingShippingDto);
-    //   result = (!_.isUndefined(user)) ? this.userTransformer.transformUserWithBillingAndShipping(user, parseInt(findUserBillingShippingDto.countryId)) : undefined;
-    // }
-    // catch (error) {
-    //   throw new HttpException({
-    //     status: HttpStatus.FORBIDDEN,
-    //     error: 'An error ocurred retrieving the data ' + error.message,
-    //   }, HttpStatus.FORBIDDEN);
-    // }
-    // if (_.isUndefined(result)) {
-    //   throw new HttpException({
-    //     status: HttpStatus.NOT_FOUND,
-    //     error: 'No users with billing and shipping for this uid: ' + uid,
-    //   }, HttpStatus.NOT_FOUND);
-    // }
+  async findUsersV2(@Query() query: any) {
+    let result: any;
+    try {
+      const users = await this.userService.getUsersByFullTextSearch(query);
+      result = (users.length > 0) ? users.map((user) => { return this.userTransformer.transformUserBasic(user) }) : [];
+    } catch (error) {
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'An error ocurred retrieving the data ' + error.message,
+      }, HttpStatus.FORBIDDEN);
+    }
     return result;
   }
 

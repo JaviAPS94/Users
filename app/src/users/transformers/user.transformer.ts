@@ -93,7 +93,7 @@ export class UserTransformer {
 
 
   public transformUserWithBillingAndShipping = (user: User, countryId: number) => {
-    if(typeof user.billingDataByUser == 'undefined'){
+    if (typeof user.billingDataByUser == 'undefined') {
       return this.transformUserWithShipping(user, countryId);
     }
     const transformedNamesObjectUserWithShippingAndBilling = {
@@ -143,8 +143,9 @@ export class UserTransformer {
     return transformedNamesObjectUserWithShippingAndBilling;
   }
 
-  public transformGenericUser = (user: User, countryId: number) => {
+  public transformGenericUser = (user: User, countryId: number | null) => {
     const document = user.documentByUser.find(documentByUserTransform => documentByUserTransform.countryId === countryId);
+
     const transformGenericUser = {
       idInt: user.id,
       birthdate: moment(user.birthdate).format("Y-MM-DD"),
@@ -168,5 +169,29 @@ export class UserTransformer {
         user.additionalInfo.externalUpdateAt : null,
     };
     return transformGenericUser;
+  }
+
+
+  public transformUserBasic = (user: User) => {
+
+    const transformGenericUser = {
+      uid: user.uid,
+      name: user.name,
+      lastname: user.lastname,
+      phone: user.phone,
+      email: user.email,
+      emailType: user.emailType,
+      documents: (user.documentByUser.length > 0) ? user.documentByUser.map((document) => { return this.transformDocumentBasic(document) }) : []
+    };
+    return transformGenericUser;
+  }
+
+  public transformDocumentBasic = (document: Document) => {
+    return {
+      document: document.document,
+      documentType: document.documentType,
+      accountId: document.accountId,
+      countryId: document.countryId
+    };
   }
 }
