@@ -173,6 +173,7 @@ export class EntityManagerWrapperService {
   }
 
   public async findUserByFullText(accountId: number, querySearch: string, size: number, findBy: string | null) {
+    console.log("Find account", accountId)
     const query = this.connection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.documentByUser", "document")
