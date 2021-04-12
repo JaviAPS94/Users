@@ -51,7 +51,7 @@ export class ShippingAddressDto {
   @IsString()
   number: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   secondaryStreet: string;
 
