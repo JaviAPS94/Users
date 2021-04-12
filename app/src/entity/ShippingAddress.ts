@@ -43,7 +43,7 @@ export class ShippingAddress {
   @Column({ nullable: false })
   secondaryStreet: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   reference: string;
 
   @Column({ type: "json", nullable: false })
