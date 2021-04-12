@@ -235,6 +235,9 @@ export class DocumentValidationConstraint implements ValidatorConstraintInterfac
       RUT: (document: any) => {
         return this.validateRut(document)
       },
+      DNI: (document: any) => {
+        return true;
+      },
       default: () => {
         return false;
       }
