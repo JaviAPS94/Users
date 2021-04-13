@@ -201,19 +201,23 @@ export class UserService {
           throw new Error('FindUserByUidAndDocumentByCountry needs a VALID billing id');
         }
       }
-      const shippingAddress = await connection.findShippingAddressById({
-        where: { id: `${findUserBillingShippingDto.shipping}` },
-      });
-      if (_.isEmpty(shippingAddress)) {
-        throw new Error(
-          'FindUserByUidAndDocumentByCountry needs a VALID shipping address id',
-        );
+      if (findUserBillingShippingDto.shipping !== "") {
+        const shippingAddress = await connection.findShippingAddressById({
+          where: { id: `${findUserBillingShippingDto.shipping}` },
+        });
+        if (_.isEmpty(shippingAddress)) {
+          throw new Error(
+              'FindUserByUidAndDocumentByCountry needs a VALID shipping address id',
+          );
+        }
       }
       let user;
-      if (findUserBillingShippingDto.billing != "") {
+      if (findUserBillingShippingDto.billing !== "" && findUserBillingShippingDto.shipping !== "") {
         user = await connection.findUserByUidWithShippingAndBilling(uid, findUserBillingShippingDto);
-      } else {
+      } else if (findUserBillingShippingDto.billing === "" && findUserBillingShippingDto.shipping !== "") {
         user = await connection.findUserByUidWithShipping(uid, findUserBillingShippingDto);
+      } else if (findUserBillingShippingDto.billing !== "" && findUserBillingShippingDto.shipping === "") {
+        user = await connection.findUserByUidWithBilling(uid, findUserBillingShippingDto);
       }
       if (_.isEmpty(user)) {
         throw new Error('FindUserByUidAndDocumentByCountry needs a VALID uid');

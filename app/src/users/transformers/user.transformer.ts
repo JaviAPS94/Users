@@ -91,10 +91,46 @@ export class UserTransformer {
     return transformedNamesObjectUserWithShipping;
   }
 
+  public transformUserWithBilling = (user: User, countryId: number) => {
+    const transformedNamesObjectUserWithBilling = {
+      billingAddress: {
+        idInt: user.billingDataByUser[0].id,
+        uid: user.uid,
+        createdAt: (user.billingDataByUser[0].createdAt) ?
+            moment(user.billingDataByUser[0].createdAt).format("Y-MM-DD HH:mm:ss") : null,
+        updatedAt: (user.billingDataByUser[0].updatedAt) ?
+            moment(user.billingDataByUser[0].updatedAt).format("Y-MM-DD HH:mm:ss") : null,
+      }
+    };
+
+    Object.assign(transformedNamesObjectUserWithBilling, this.transformGenericUser(user, countryId));
+
+    delete user.billingDataByUser[0].createdAt;
+    delete user.billingDataByUser[0].updatedAt;
+    delete user.billingDataByUser[0].deleteAt;
+
+    Object.assign(transformedNamesObjectUserWithBilling.billingAddress, user.billingDataByUser[0]);
+
+    delete user.createdAt;
+    delete user.updatedAt;
+    delete user.deleteAt;
+    delete user.id;
+    delete user.accountId;
+    delete user.documentByUser;
+    delete user.billingDataByUser;
+    delete user.shippingAddressByUser;
+
+    Object.assign(transformedNamesObjectUserWithBilling, user)
+
+    return transformedNamesObjectUserWithBilling;
+  }
 
   public transformUserWithBillingAndShipping = (user: User, countryId: number) => {
-    if (typeof user.billingDataByUser == 'undefined') {
+    if (typeof user.billingDataByUser === 'undefined') {
       return this.transformUserWithShipping(user, countryId);
+    }
+    if (typeof user.shippingAddressByUser === 'undefined') {
+      return this.transformUserWithBilling(user, countryId);
     }
     const transformedNamesObjectUserWithShippingAndBilling = {
       billingAddress: {
