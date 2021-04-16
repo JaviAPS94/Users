@@ -8,7 +8,7 @@ import { userType } from '../enums/user-type.enum';
 class PhoneDto {
   @IsNotEmpty()
   @IsString()
-  @Length(6, 12)
+  @Length(6, 15)
   number: string;
 
   @IsNotEmpty()
