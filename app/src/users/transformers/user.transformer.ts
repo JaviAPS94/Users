@@ -91,6 +91,23 @@ export class UserTransformer {
     return transformedNamesObjectUserWithShipping;
   }
 
+  public transformUser = (user: User, countryId: number) => {
+    const transformedNamesObjectUser = this.transformGenericUser(user, countryId);
+
+    delete user.createdAt;
+    delete user.updatedAt;
+    delete user.deleteAt;
+    delete user.id;
+    delete user.accountId;
+    delete user.documentByUser;
+    delete user.billingDataByUser;
+    delete user.shippingAddressByUser;
+
+    Object.assign(transformedNamesObjectUser, user)
+
+    return transformedNamesObjectUser;
+  }
+
   public transformUserWithBilling = (user: User, countryId: number) => {
     const transformedNamesObjectUserWithBilling = {
       billingAddress: {
@@ -126,6 +143,9 @@ export class UserTransformer {
   }
 
   public transformUserWithBillingAndShipping = (user: User, countryId: number) => {
+    if (typeof user.shippingAddressByUser === 'undefined' && typeof user.billingDataByUser === 'undefined') {
+      return this.transformUser(user, countryId);
+    }
     if (typeof user.billingDataByUser === 'undefined') {
       return this.transformUserWithShipping(user, countryId);
     }

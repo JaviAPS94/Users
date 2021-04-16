@@ -166,6 +166,15 @@ export class EntityManagerWrapperService {
     return user;
   }
 
+  public async findUserByUidWithDocument(uid: string) {
+    const user = await this.connection.getRepository(User)
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.documentByUser", "document")
+        .where("user.uid = :uid", { uid })
+        .getOne();
+    return user;
+  }
+
   public async findDefaultBillingByUser(userId: number) {
     const billingData = await this.connection.getRepository(BillingData)
       .createQueryBuilder("billing-data")

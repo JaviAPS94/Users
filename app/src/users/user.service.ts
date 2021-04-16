@@ -218,6 +218,8 @@ export class UserService {
         user = await connection.findUserByUidWithShipping(uid, findUserBillingShippingDto);
       } else if (findUserBillingShippingDto.billing !== "" && findUserBillingShippingDto.shipping === "") {
         user = await connection.findUserByUidWithBilling(uid, findUserBillingShippingDto);
+      } else {
+        user = await connection.findUserByUidWithDocument(uid);
       }
       if (_.isEmpty(user)) {
         throw new Error('FindUserByUidAndDocumentByCountry needs a VALID uid');
