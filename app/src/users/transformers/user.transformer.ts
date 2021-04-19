@@ -91,10 +91,66 @@ export class UserTransformer {
     return transformedNamesObjectUserWithShipping;
   }
 
+  public transformUser = (user: User, countryId: number) => {
+    const transformedNamesObjectUser = this.transformGenericUser(user, countryId);
+
+    delete user.createdAt;
+    delete user.updatedAt;
+    delete user.deleteAt;
+    delete user.id;
+    delete user.accountId;
+    delete user.documentByUser;
+    delete user.billingDataByUser;
+    delete user.shippingAddressByUser;
+
+    Object.assign(transformedNamesObjectUser, user)
+
+    return transformedNamesObjectUser;
+  }
+
+  public transformUserWithBilling = (user: User, countryId: number) => {
+    const transformedNamesObjectUserWithBilling = {
+      billingAddress: {
+        idInt: user.billingDataByUser[0].id,
+        uid: user.uid,
+        createdAt: (user.billingDataByUser[0].createdAt) ?
+            moment(user.billingDataByUser[0].createdAt).format("Y-MM-DD HH:mm:ss") : null,
+        updatedAt: (user.billingDataByUser[0].updatedAt) ?
+            moment(user.billingDataByUser[0].updatedAt).format("Y-MM-DD HH:mm:ss") : null,
+      }
+    };
+
+    Object.assign(transformedNamesObjectUserWithBilling, this.transformGenericUser(user, countryId));
+
+    delete user.billingDataByUser[0].createdAt;
+    delete user.billingDataByUser[0].updatedAt;
+    delete user.billingDataByUser[0].deleteAt;
+
+    Object.assign(transformedNamesObjectUserWithBilling.billingAddress, user.billingDataByUser[0]);
+
+    delete user.createdAt;
+    delete user.updatedAt;
+    delete user.deleteAt;
+    delete user.id;
+    delete user.accountId;
+    delete user.documentByUser;
+    delete user.billingDataByUser;
+    delete user.shippingAddressByUser;
+
+    Object.assign(transformedNamesObjectUserWithBilling, user)
+
+    return transformedNamesObjectUserWithBilling;
+  }
 
   public transformUserWithBillingAndShipping = (user: User, countryId: number) => {
-    if(typeof user.billingDataByUser == 'undefined'){
+    if (typeof user.shippingAddressByUser === 'undefined' && typeof user.billingDataByUser === 'undefined') {
+      return this.transformUser(user, countryId);
+    }
+    if (typeof user.billingDataByUser === 'undefined') {
       return this.transformUserWithShipping(user, countryId);
+    }
+    if (typeof user.shippingAddressByUser === 'undefined') {
+      return this.transformUserWithBilling(user, countryId);
     }
     const transformedNamesObjectUserWithShippingAndBilling = {
       billingAddress: {
@@ -143,8 +199,9 @@ export class UserTransformer {
     return transformedNamesObjectUserWithShippingAndBilling;
   }
 
-  public transformGenericUser = (user: User, countryId: number) => {
+  public transformGenericUser = (user: User, countryId: number | null) => {
     const document = user.documentByUser.find(documentByUserTransform => documentByUserTransform.countryId === countryId);
+
     const transformGenericUser = {
       idInt: user.id,
       birthdate: moment(user.birthdate).format("Y-MM-DD"),
@@ -168,5 +225,29 @@ export class UserTransformer {
         user.additionalInfo.externalUpdateAt : null,
     };
     return transformGenericUser;
+  }
+
+
+  public transformUserBasic = (user: User) => {
+
+    const transformGenericUser = {
+      uid: user.uid,
+      name: user.name,
+      lastname: user.lastname,
+      phone: user.phone,
+      email: user.email,
+      emailType: user.emailType,
+      documents: (user.documentByUser.length > 0) ? user.documentByUser.map((document) => { return this.transformDocumentBasic(document) }) : []
+    };
+    return transformGenericUser;
+  }
+
+  public transformDocumentBasic = (document: Document) => {
+    return {
+      document: document.document,
+      documentType: document.documentType,
+      accountId: document.accountId,
+      countryId: document.countryId
+    };
   }
 }

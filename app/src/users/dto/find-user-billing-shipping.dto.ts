@@ -4,7 +4,6 @@ export class FindUserBillingShippingDto {
   @IsString()
   billing: string;
 
-  @IsNotEmpty()
   @IsString()
   shipping: string;
 

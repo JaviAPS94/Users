@@ -8,6 +8,10 @@ class FieldDto {
 
   @IsNotEmpty()
   @IsString()
+  label: string;
+
+  @IsNotEmpty()
+  @IsString()
   value: string;
 }
 

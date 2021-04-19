@@ -51,11 +51,11 @@ export class ShippingAddressDto {
   @IsString()
   number: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   secondaryStreet: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   reference: string;
 

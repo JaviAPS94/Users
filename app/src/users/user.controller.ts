@@ -131,4 +131,19 @@ export class UserController {
     }
     return result;
   }
+
+  @Get('/findUsers')
+  async findUsersV2(@Query() query: any) {
+    let result: any;
+    try {
+      const users = await this.userService.getUsersByFullTextSearch(query);
+      result = (users.length > 0) ? users.map((user) => { return this.userTransformer.transformUserBasic(user) }) : [];
+    } catch (error) {
+      throw new HttpException({
+        status: HttpStatus.FORBIDDEN,
+        error: 'An error ocurred retrieving the data ' + error.message,
+      }, HttpStatus.FORBIDDEN);
+    }
+    return result;
+  }
 }

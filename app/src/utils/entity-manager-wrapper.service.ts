@@ -155,6 +155,26 @@ export class EntityManagerWrapperService {
     return user;
   }
 
+  public async findUserByUidWithBilling(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto) {
+    const user = await this.connection.getRepository(User)
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.billingDataByUser", "billingDataByUser")
+        .leftJoinAndSelect("user.documentByUser", "document")
+        .where("user.uid = :uid", { uid })
+        .andWhere("billingDataByUser.id = :billing", { billing: findUserBillingShippingDto.billing })
+        .getOne();
+    return user;
+  }
+
+  public async findUserByUidWithDocument(uid: string) {
+    const user = await this.connection.getRepository(User)
+        .createQueryBuilder("user")
+        .leftJoinAndSelect("user.documentByUser", "document")
+        .where("user.uid = :uid", { uid })
+        .getOne();
+    return user;
+  }
+
   public async findDefaultBillingByUser(userId: number) {
     const billingData = await this.connection.getRepository(BillingData)
       .createQueryBuilder("billing-data")
@@ -171,4 +191,28 @@ export class EntityManagerWrapperService {
       .getOne();
     return shippingAddress;
   }
+
+  public async findUserByFullText(accountId: number, querySearch: string, size: number, findBy: string | null) {
+    console.log("Find account", accountId)
+    const query = this.connection.getRepository(User)
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.documentByUser", "document")
+      .where("user.accountId = :accountIdUser", { accountIdUser: accountId })
+      .limit(size);
+
+    if (querySearch) {
+      if (findBy == 'uid') {
+        return await query.andWhere("user.uid = :uid", { uid: querySearch }).getMany();
+      }
+      query.andWhere("((user.email like :email) or (user.phone->'$.number' = :phoneNumber) or (document.document like :document))", 
+      { 
+        email: querySearch + '%',
+        phoneNumber: querySearch,
+        document: querySearch + '%'
+       }
+      );
+    }
+    return await query.getMany();
+  }
+
 }

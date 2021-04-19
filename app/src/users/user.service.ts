@@ -13,8 +13,7 @@ import { userType } from './enums/user-type.enum';
 
 @Injectable()
 export class UserService {
-  constructor()
-  {}
+  constructor() { }
 
   async saveUser(user: UserDto) {
     const connection = getConnection().createQueryRunner();
@@ -117,11 +116,11 @@ export class UserService {
       const user =
         !_.isUndefined(userDto.type) && userDto.type === userType.DEPENDENT
           ? await queryRunner.manager.findOne(User, {
-              where: { id: `${userDto.idInt}` },
-            })
+            where: { id: `${userDto.idInt}` },
+          })
           : await queryRunner.manager.findOne(User, {
-              where: { uid: `${userDto.uid}` },
-            });
+            where: { uid: `${userDto.uid}` },
+          });
 
       Object.assign(user, userDto);
       user.uid = user.type === userType.DEPENDENT ? null : user.uid;
@@ -194,7 +193,7 @@ export class UserService {
     connection: EntityManagerWrapperService,
   ) {
     try {
-      if(findUserBillingShippingDto.billing!=""){
+      if (findUserBillingShippingDto.billing != "") {
         const billingData = await connection.findBillingDataById({
           where: { id: `${findUserBillingShippingDto.billing}` }
         });
@@ -202,19 +201,25 @@ export class UserService {
           throw new Error('FindUserByUidAndDocumentByCountry needs a VALID billing id');
         }
       }
-      const shippingAddress = await connection.findShippingAddressById({
-        where: { id: `${findUserBillingShippingDto.shipping}` },
-      });
-      if (_.isEmpty(shippingAddress)) {
-        throw new Error(
-          'FindUserByUidAndDocumentByCountry needs a VALID shipping address id',
-        );
+      if (findUserBillingShippingDto.shipping !== "") {
+        const shippingAddress = await connection.findShippingAddressById({
+          where: { id: `${findUserBillingShippingDto.shipping}` },
+        });
+        if (_.isEmpty(shippingAddress)) {
+          throw new Error(
+              'FindUserByUidAndDocumentByCountry needs a VALID shipping address id',
+          );
+        }
       }
       let user;
-      if (findUserBillingShippingDto.billing!=""){
+      if (findUserBillingShippingDto.billing !== "" && findUserBillingShippingDto.shipping !== "") {
         user = await connection.findUserByUidWithShippingAndBilling(uid, findUserBillingShippingDto);
-      } else {
+      } else if (findUserBillingShippingDto.billing === "" && findUserBillingShippingDto.shipping !== "") {
         user = await connection.findUserByUidWithShipping(uid, findUserBillingShippingDto);
+      } else if (findUserBillingShippingDto.billing !== "" && findUserBillingShippingDto.shipping === "") {
+        user = await connection.findUserByUidWithBilling(uid, findUserBillingShippingDto);
+      } else {
+        user = await connection.findUserByUidWithDocument(uid);
       }
       if (_.isEmpty(user)) {
         throw new Error('FindUserByUidAndDocumentByCountry needs a VALID uid');
@@ -227,6 +232,22 @@ export class UserService {
       throw new Error(
         'UserByUidWithBillingAndShipping Find error: ' + error.message,
       );
+    }
+  }
+
+  public async getUsersByFullTextSearch(query: any) {
+    const wraperService = new EntityManagerWrapperService(getManager());
+    return await this.findUsersByFullText(query, wraperService);
+  }
+  public async findUsersByFullText(
+    query: any,
+    connection: EntityManagerWrapperService,
+  ) {
+    try {
+      return await connection.findUserByFullText(query.account, query.parameter, query.size, query.findBy || null);
+    } catch (error) {
+      console.log('ERROR: findUsersByFullText Find error: ' + error.message);
+      throw new Error('findUsersByFullText Find error: ' + error.message);
     }
   }
 
