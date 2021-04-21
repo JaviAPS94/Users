@@ -89,6 +89,18 @@ export const ConditionalDocumentType = (uid: string, countryId: string, validati
   };
 }
 
+export const LivingPlace = (uid: string, country: any, validationOptions?: ValidationOptions) => {
+  return (object: any, propertyName: string) => {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      constraints: [uid, country],
+      validator: LivingPlaceConstraint,
+    });
+  };
+}
+
 @ValidatorConstraint({ name: 'ConditionalDocument' })
 export class ConditionalDocumentConstraint implements ValidatorConstraintInterface {
   async validate(value: any, args: ValidationArguments) {
@@ -153,6 +165,52 @@ export class BirthdateConstraint implements ValidatorConstraintInterface {
     });
 
     return !_.isUndefined(test) ? customValidation(value, test.rules['birthdate']) : true;
+  }
+}
+
+@ValidatorConstraint({ name: 'LivingPlace' })
+export class LivingPlaceConstraint implements ValidatorConstraintInterface {
+  async validate(value: any, args: ValidationArguments) {
+    const wraperService = new EntityManagerWrapperService(getManager());
+    const uid = (args.object as any)[args.constraints[0]];
+    const country = (args.object as any)[args.constraints[1]];
+    return await this.validLivingPlace(value, uid, country, wraperService);
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return "The living place is invalid";
+  }
+
+  async validLivingPlace(value, uid: string, country: any, connection: EntityManagerWrapperService) {
+    const validationResult = [];
+    const user = await connection.findUserByUid({ uid });
+    let shippingAddressProperties = await connection.findProperties({
+      where: {
+        accountId: user.accountId,
+        countryId: (country && country.id) ? country.id : 1,
+        entity: 'livingPlace'
+      },
+    });
+    if (_.isUndefined(shippingAddressProperties)) {
+      shippingAddressProperties = await connection.findProperties({
+        where: {
+          accountId: user.accountId,
+          entity: 'livingPlaceDefault'
+        },
+      });
+    }
+    validationResult.push(customValidation(value, shippingAddressProperties.rules['livingPlace']));
+    if (!_.isUndefined(value)) {
+      for (const key in value) {
+        validationResult.push(customValidation(value[key], shippingAddressProperties.rules[key]));
+      }
+      for (const field of value.fields) {
+        for (const key in field) {
+          validationResult.push(customValidation(field[key], shippingAddressProperties.rules["fields"+key]));
+        }
+      }
+    }
+    return !validationResult.includes(false);
   }
 }
 
@@ -413,6 +471,9 @@ export const customValidation = (value, rules) => {
     required: (requiredValue: any, ruleValue: any) => {
       return ruleValue ? (!_.isUndefined(requiredValue)) : true;
     },
+    isNotEmpty: (requiredValue: any, ruleValue: any) => {
+      return ruleValue ? ((requiredValue === "") ? false : true) : true;
+    },
     birthdateMin: (birthdateMinValue: any, ruleValue: any) => {
       const birthdate = moment(birthdateMinValue, "YYYY-MM-DD");
       const today = moment();
@@ -439,6 +500,5 @@ export const customValidation = (value, rules) => {
     }
     result.push((validationCases[key] || validationCases['default'])(value, rules[key]));
   }
-
   return !result.includes(false);
 }
