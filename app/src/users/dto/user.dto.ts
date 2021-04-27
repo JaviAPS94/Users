@@ -84,7 +84,7 @@ export class UserDto {
   @IsOptional()
   @ValidateNested()
   @Type(() => PhoneDto)
-  @AlreadyExistPhoneNumber('type')
+  @AlreadyExistPhoneNumber('type', 'account')
   phone: PhoneDto;
 
   @IsOptional()

@@ -102,10 +102,11 @@ export class EntityManagerWrapperService {
     return await this.connection.getRepository(Property).findOne(sentence);
   }
 
-  public async findUserByPhoneNumber(phoneNumber: string) {
+  public async findUserByAccountPhoneNumber(phoneNumber: string, account: number) {
     const user = await this.connection.getRepository(User)
       .createQueryBuilder("user")
       .where("user.phone->'$.number' = :phoneNumber", { phoneNumber })
+      .andWhere("user.accountId = :account", { account })
       .getOne();
     return user;
   }

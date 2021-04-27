@@ -108,7 +108,7 @@ describe('Custom Validation', () => {
     it('should return true if validation of alreadyExistPhoneNumberConstraint is successfull', async () => {
       mockFindUserByPhoneNumber();
       const wrapperService = new EntityManagerWrapperService();
-      const result = await alreadyExistPhoneNumberConstraint.validPhoneNumber("0958632589", userType.NORMAL, wrapperService);
+      const result = await alreadyExistPhoneNumberConstraint.validPhoneNumber("0958632589", userType.NORMAL, 1, wrapperService);
       expect(result).toBe(true);
     });
 
@@ -150,7 +150,7 @@ describe('Custom Validation', () => {
 });
 
 const mockFindUserByPhoneNumber = () => {
-  const findUserByPhoneNumber = EntityManagerWrapperService.prototype.findUserByPhoneNumber = jest.fn();
+  const findUserByPhoneNumber = EntityManagerWrapperService.prototype.findUserByAccountPhoneNumber = jest.fn();
   findUserByPhoneNumber.mockReturnValue(undefined);
 };
 

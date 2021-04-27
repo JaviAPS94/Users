@@ -17,13 +17,13 @@ export const Birthdate = (account: string, document: string, validationOptions?:
   };
 }
 
-export const AlreadyExistPhoneNumber = (userTypePhoneValidation: string, validationOptions?: ValidationOptions) => {
+export const AlreadyExistPhoneNumber = (userTypePhoneValidation: string, account: string, validationOptions?: ValidationOptions) => {
   return (object: any, propertyName: string) => {
     registerDecorator({
       target: object.constructor,
       propertyName,
       options: validationOptions,
-      constraints: [userTypePhoneValidation],
+      constraints: [userTypePhoneValidation, account],
       validator: AlreadyExistPhoneNumberConstraint,
     });
   };
@@ -218,20 +218,21 @@ export class LivingPlaceConstraint implements ValidatorConstraintInterface {
 export class AlreadyExistPhoneNumberConstraint implements ValidatorConstraintInterface {
   async validate(value: any, args: ValidationArguments) {
     const userTypeEnum = userType[(args.object as any)[args.constraints[0]]];
+    const account = Number((args.object as any)[args.constraints[1]]);
     const wraperService = new EntityManagerWrapperService(getManager());
-    return await this.validPhoneNumber(value.number, userTypeEnum, wraperService);
+    return await this.validPhoneNumber(value.number, userTypeEnum, account, wraperService);
   }
 
   defaultMessage(args: ValidationArguments) {
     return "The phone number already exist in the database";
   }
 
-  async validPhoneNumber(value: any, userTypeEnum: userType, connection: EntityManagerWrapperService) {
+  async validPhoneNumber(value: any, userTypeEnum: userType, account: number, connection: EntityManagerWrapperService) {
     if (userTypeEnum === userType.DEPENDENT) {
       return true;
     }
-    const userByPhoneNumber = await connection.findUserByPhoneNumber(value);
-    return (_.isUndefined(userByPhoneNumber)) ? true : false;
+    const userByAccountAndPhoneNumber = await connection.findUserByAccountPhoneNumber(value, account);
+    return (_.isUndefined(userByAccountAndPhoneNumber)) ? true : false;
   }
 }
 
