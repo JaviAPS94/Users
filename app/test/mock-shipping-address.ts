@@ -15,6 +15,7 @@ export const mockShippingAddress = {
         fields: [
           {
             id: "test",
+            label: "test",
             value: "test"
           }
         ]

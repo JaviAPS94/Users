@@ -1,6 +1,19 @@
 import { UnprocessableEntityException } from '@nestjs/common';
 import { ShippingAddressDto } from '../../../../src/shippingAddress/dto/shipping-address.dto';
 import { ValidationPipe } from '../../../../src/validation.pipe';
+import {createConnections, getConnection} from "typeorm";
+import {LivingPlaceConstraint} from "../../../../src/utils/custom-validations.service";
+
+jest.mock('../../../../src/utils/entity-manager-wrapper.service');
+
+beforeAll(async () => {
+  await createConnections()
+})
+
+afterAll(async () => {
+  const defaultConnection = getConnection('default')
+  await defaultConnection.close()
+})
 
 describe('ShippingAddressDto', () => {
   let validationPipe: ValidationPipe;
@@ -11,6 +24,7 @@ describe('ShippingAddressDto', () => {
   });
 
   it('should return value object if validation is successful', async () => {
+    mockLivingPlaceContraint();
     valueObject = {
       uid: "test",
       default: true,
@@ -34,6 +48,7 @@ describe('ShippingAddressDto', () => {
   });
 
   it('should throw exception if validation fails', async () => {
+    mockLivingPlaceContraint();
     valueObject = {
       default: true,
       lat: 0.67,
@@ -46,3 +61,8 @@ describe('ShippingAddressDto', () => {
     await expect(validationPipe.transform(valueObject, { type: "body", metatype: ShippingAddressDto })).rejects.toThrow(UnprocessableEntityException);
   });
 });
+
+const mockLivingPlaceContraint = () => {
+  const livingPlaceContraint = LivingPlaceConstraint.prototype.validLivingPlace = jest.fn();
+  return livingPlaceContraint.mockReturnValue(true);
+};
