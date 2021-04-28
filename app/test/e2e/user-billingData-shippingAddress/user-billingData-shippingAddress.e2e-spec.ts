@@ -38,7 +38,7 @@ describe('User AppController (e2e)', () => {
     const result = request(app.getHttpServer())
       .get('/api/billing-data')
       .set('uid', '132')
-      .expect(HttpStatus.NOT_FOUND);
+      .expect(HttpStatus.OK);
     return result;
   });
 
@@ -46,7 +46,7 @@ describe('User AppController (e2e)', () => {
     const result = request(app.getHttpServer())
       .get('/api/shipping-address')
       .set('uid', '132')
-      .expect(HttpStatus.NOT_FOUND);
+      .expect(HttpStatus.OK);
     return result;
   });
 
