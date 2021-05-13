@@ -466,6 +466,102 @@ export class AlreadyExistDocumentConstraint implements ValidatorConstraintInterf
   }
 }
 
+export const MainStreet = (uid: string, country: any, validationOptions?: ValidationOptions) => {
+  return (object: any, propertyName: string) => {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      constraints: [uid, country],
+      validator: MainStreetConstraint,
+    });
+  };
+}
+
+@ValidatorConstraint({ name: 'MainStreet' })
+export class MainStreetConstraint implements ValidatorConstraintInterface {
+  async validate(value: any, args: ValidationArguments) {
+    const wraperService = new EntityManagerWrapperService(getManager());
+    const uid = (args.object as any)[args.constraints[0]];
+    const country = (args.object as any)[args.constraints[1]];
+    return await this.validMainStreet(value, uid, country, wraperService);
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return "The main street should be not empty";
+  }
+
+  async validMainStreet(value, uid: string, country: any, connection: EntityManagerWrapperService) {
+    const validationResult = [];
+    const user = await connection.findUserByUid({ uid });
+    let shippingAddressProperties = await connection.findProperties({
+      where: {
+        accountId: user.accountId,
+        countryId: (country && country.id) ? country.id : 1,
+        entity: 'shippingAddressMainStreet'
+      },
+    });
+    if (_.isUndefined(shippingAddressProperties)) {
+      shippingAddressProperties = await connection.findProperties({
+        where: {
+          accountId: user.accountId,
+          entity: 'shippingAddressMainStreetDefault'
+        },
+      });
+    }
+    validationResult.push(customValidation(value, shippingAddressProperties.rules['mainStreet']));
+    return !validationResult.includes(false);
+  }
+}
+
+export const ShippingAddressNumber = (uid: string, country: any, validationOptions?: ValidationOptions) => {
+  return (object: any, propertyName: string) => {
+    registerDecorator({
+      target: object.constructor,
+      propertyName,
+      options: validationOptions,
+      constraints: [uid, country],
+      validator: ShippingAddressNumberConstraint,
+    });
+  };
+}
+
+@ValidatorConstraint({ name: 'ShippingAddressNumber' })
+export class ShippingAddressNumberConstraint implements ValidatorConstraintInterface {
+  async validate(value: any, args: ValidationArguments) {
+    const wraperService = new EntityManagerWrapperService(getManager());
+    const uid = (args.object as any)[args.constraints[0]];
+    const country = (args.object as any)[args.constraints[1]];
+    return await this.validNumber(value, uid, country, wraperService);
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return "The number should be not empty";
+  }
+
+  async validNumber(value, uid: string, country: any, connection: EntityManagerWrapperService) {
+    const validationResult = [];
+    const user = await connection.findUserByUid({ uid });
+    let shippingAddressProperties = await connection.findProperties({
+      where: {
+        accountId: user.accountId,
+        countryId: (country && country.id) ? country.id : 1,
+        entity: 'shippingAddressNumber'
+      },
+    });
+    if (_.isUndefined(shippingAddressProperties)) {
+      shippingAddressProperties = await connection.findProperties({
+        where: {
+          accountId: user.accountId,
+          entity: 'shippingAddressNumberDefault'
+        },
+      });
+    }
+    validationResult.push(customValidation(value, shippingAddressProperties.rules['number']));
+    return !validationResult.includes(false);
+  }
+}
+
 export const customValidation = (value, rules) => {
   const result = [];
   const validationCases = {

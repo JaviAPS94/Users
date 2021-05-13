@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { LivingPlaceDto } from './living-place.dto';
-import {LivingPlace} from "../../utils/custom-validations.service";
+import {LivingPlace, MainStreet, ShippingAddressNumber} from "../../utils/custom-validations.service";
 
 export class ShippingAddressDto {
   @IsNotEmpty()
@@ -44,12 +44,10 @@ export class ShippingAddressDto {
   @IsString()
   addressByGoogle?: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @MainStreet('uid', 'country')
   mainStreet: string;
 
-  @IsNotEmpty()
-  @IsString()
+  @ShippingAddressNumber('uid', 'country')
   number: string;
 
   @IsOptional()
