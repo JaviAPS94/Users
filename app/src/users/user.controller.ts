@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Put, Query, Headers } from '@nestjs/common';
 import * as _ from "lodash";
 import { DynamicFilterDto } from './dto/dynamic-filter.dto';
 import { FindUserBillingShippingDto } from './dto/find-user-billing-shipping.dto';
@@ -48,7 +48,8 @@ export class UserController {
   async find(
     @Query('uid') uid: string,
     @Query('account') account: string,
-    @Query('countryId') countryId: string
+    @Query('countryId') countryId: string,
+    @Headers('email') email: string | null | undefined
   ) {
     let result;
     try {
@@ -66,6 +67,9 @@ export class UserController {
         status: HttpStatus.NOT_FOUND,
         error: 'No user for uid: ' + uid,
       }, HttpStatus.NOT_FOUND);
+    }
+    if (email) {
+      result.email = email;
     }
     return result;
   }
@@ -111,7 +115,11 @@ export class UserController {
   }
 
   @Get('/all/:uid')
-  async findUserByUidWithBillingAndShipping(@Param('uid') uid: string, @Query() findUserBillingShippingDto: FindUserBillingShippingDto) {
+  async findUserByUidWithBillingAndShipping(
+     @Param('uid') uid: string,
+     @Query() findUserBillingShippingDto: FindUserBillingShippingDto,
+     @Headers('email') email: string | null | undefined
+     ) {
     let result;
     try {
       const user = await this.userService.getUserWithBillingAndShipping(uid, findUserBillingShippingDto);
@@ -128,6 +136,9 @@ export class UserController {
         status: HttpStatus.NOT_FOUND,
         error: 'No users with billing and shipping for this uid: ' + uid,
       }, HttpStatus.NOT_FOUND);
+    }
+    if (email) {
+      result.email = email;
     }
     return result;
   }
