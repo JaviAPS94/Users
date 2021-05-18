@@ -205,11 +205,13 @@ export class EntityManagerWrapperService {
       if (findBy == 'uid') {
         return await query.andWhere("user.uid = :uid", { uid: querySearch }).getMany();
       }
-      query.andWhere("((user.email like :email) or (user.phone->'$.number' = :phoneNumber) or (document.document like :document))", 
+      query.andWhere("((user.email like :email) or (user.phone->'$.number' = :phoneNumber) or (document.document like :document) or (user.name like :name) or (user.lastname like :lastname))", 
       { 
         email: querySearch + '%',
         phoneNumber: querySearch,
-        document: querySearch + '%'
+        document: querySearch + '%',
+        name: '%' + querySearch + '%',
+        lastname: '%' + querySearch + '%',
        }
       );
     }
