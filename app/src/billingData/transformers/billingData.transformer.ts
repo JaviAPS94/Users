@@ -1,6 +1,6 @@
 import { boolean } from "joi";
 import { Pagination } from "nestjs-typeorm-paginate";
-import { BillingData } from "../../../src/entity/BillingData";
+import { BillingData } from "../../entity/BillingData";
 
 export class BillingDataTransformer {
   public transformBillingData = (billingData: BillingData) => {

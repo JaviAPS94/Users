@@ -1,5 +1,5 @@
 import { EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from "typeorm";
-import { User } from "../../src/entity/User";
+import { User } from "../entity/User";
 import SNSProvider from "../providers/SNSProvider";
 
 @EventSubscriber()

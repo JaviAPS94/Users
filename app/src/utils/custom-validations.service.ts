@@ -2,7 +2,7 @@ import { registerDecorator, ValidationArguments, ValidationOptions, ValidatorCon
 import * as _ from "lodash";
 import * as moment from "moment";
 import { getManager } from 'typeorm';
-import { userType } from '../../src/users/enums/user-type.enum';
+import { userType } from '../users/enums/user-type.enum';
 import { EntityManagerWrapperService } from './entity-manager-wrapper.service';
 
 export const Birthdate = (account: string, document: string, validationOptions?: ValidationOptions) => {

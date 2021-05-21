@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import * as _ from "lodash";
 import { getManager } from "typeorm";
-import { LivingPlace } from "../../src/entity/LivingPlace";
-import { EntityManagerWrapperService } from "../../src/utils/entity-manager-wrapper.service";
+import { LivingPlace } from "../entity/LivingPlace";
+import { EntityManagerWrapperService } from "../utils/entity-manager-wrapper.service";
 import { LivingPlaceDto } from "./dto/living-place.dto";
 import { orderByEnum } from "./enums/oder-by.enum";
 

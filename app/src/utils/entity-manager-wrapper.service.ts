@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { EntityManager } from 'typeorm';
-import { DynamicFilterDto } from '../../src/users/dto/dynamic-filter.dto';
-import { FindUserBillingShippingDto } from '../../src/users/dto/find-user-billing-shipping.dto';
+import { DynamicFilterDto } from '../users/dto/dynamic-filter.dto';
+import { FindUserBillingShippingDto } from '../users/dto/find-user-billing-shipping.dto';
 import { orderByEnum } from '../billingData/enums/order-by.enum';
 import { BillingData } from '../entity/BillingData';
 import { LivingPlace } from '../entity/LivingPlace';
@@ -13,27 +13,30 @@ import typeorm = require('typeorm');
 
 @Injectable()
 export class EntityManagerWrapperService {
-  constructor(private connection: EntityManager = typeorm.getManager()) { }
+  constructor(
+    private readConnection: EntityManager = typeorm.getManager("default"),
+    private writeConnection: EntityManager = typeorm.getManager("write")
+  ) { }
 
   public async save(entity: any) {
-    return await this.connection.save(entity);
+    return await this.writeConnection.save(entity);
   }
 
   public async findUserByUid(sentence: {}) {
-    return await this.connection.getRepository(User).findOne(sentence);
+    return await this.readConnection.getRepository(User).findOne(sentence);
   }
 
   public async findBillingDataById(sentence: {}) {
-    return await this.connection.getRepository(BillingData).findOne(sentence);
+    return await this.readConnection.getRepository(BillingData).findOne(sentence);
   }
 
   public async findShippingAddressById(sentence: {}) {
-    return await this.connection.getRepository(ShippingAddress).findOne(sentence);
+    return await this.readConnection.getRepository(ShippingAddress).findOne(sentence);
   }
 
   public async findBillingData(uid: string, orderBy: orderByEnum, sortBy: string, options: IPaginationOptions, countryId?: string) {
     const sortByBillingDataField = "billing-data." + sortBy;
-    let billingDataQueryBuilder = await this.connection.getRepository(BillingData)
+    let billingDataQueryBuilder = await this.readConnection.getRepository(BillingData)
       .createQueryBuilder("billing-data")
       .leftJoinAndSelect("billing-data.user", "user")
       .where("user.uid = :uid", { uid });
@@ -46,12 +49,12 @@ export class EntityManagerWrapperService {
   }
 
   public async deleteBillingData(id: number) {
-    return await this.connection.getRepository(BillingData).softDelete(id);
+    return await this.writeConnection.getRepository(BillingData).softDelete(id);
   }
 
   public async findShippingAddress(uid: string, orderBy: orderByEnum, sortBy: string, options: IPaginationOptions, countryId?: string) {
     const sortByShippingAddressField = "shipping-address." + sortBy;
-    let shippingAddressQueryBuilder = await this.connection.getRepository(ShippingAddress)
+    let shippingAddressQueryBuilder = await this.readConnection.getRepository(ShippingAddress)
       .createQueryBuilder("shipping-address")
       .leftJoinAndSelect("shipping-address.user", "user")
       .where("user.uid = :uid", { uid })
@@ -64,12 +67,12 @@ export class EntityManagerWrapperService {
   }
 
   public async deleteShippingAddress(id: number) {
-    return await this.connection.getRepository(ShippingAddress).softDelete(id);
+    return await this.writeConnection.getRepository(ShippingAddress).softDelete(id);
   }
 
   public async findLivingPlacesByCountryId(countryId: number, orderBy: orderByEnum, sortBy: string) {
     const sortByLivingPlaceField = "living-place." + sortBy;
-    const livingPlaces = await this.connection.getRepository(LivingPlace)
+    const livingPlaces = await this.readConnection.getRepository(LivingPlace)
       .createQueryBuilder("living-place")
       .where("living-place.countryId = :countryId", { countryId })
       .orderBy(sortByLivingPlaceField, orderBy)
@@ -78,19 +81,19 @@ export class EntityManagerWrapperService {
   }
 
   public async findLivingPlaceById(sentence: {}) {
-    return await this.connection.getRepository(LivingPlace).findOne(sentence);
+    return await this.readConnection.getRepository(LivingPlace).findOne(sentence);
   }
 
   public async deleteLivingPlace(id: number) {
-    return await this.connection.getRepository(LivingPlace).softDelete(id);
+    return await this.writeConnection.getRepository(LivingPlace).softDelete(id);
   }
 
   public async findUserByDynamicFilter(dynamicFilterDto: DynamicFilterDto) {
     const userFieldToSearch = "user." + dynamicFilterDto.name;
-    let users = await this.connection.getRepository(User)
+    let users = await this.readConnection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.documentByUser", "document")
-      //.andWhere("document.countryId = :countryId", { countryId: dynamicFilterDto.countryId });
+    //.andWhere("document.countryId = :countryId", { countryId: dynamicFilterDto.countryId });
 
     users = (dynamicFilterDto.name === "document") ? users = users.andWhere("document.document IN (:value)", { value: dynamicFilterDto.value })
       : users.andWhere(`${userFieldToSearch} IN (:value)`, { value: dynamicFilterDto.value });
@@ -99,11 +102,11 @@ export class EntityManagerWrapperService {
   }
 
   public async findProperties(sentence: {}) {
-    return await this.connection.getRepository(Property).findOne(sentence);
+    return await this.readConnection.getRepository(Property).findOne(sentence);
   }
 
   public async findUserByAccountPhoneNumber(phoneNumber: string, account: number) {
-    const user = await this.connection.getRepository(User)
+    const user = await this.readConnection.getRepository(User)
       .createQueryBuilder("user")
       .where("user.phone->'$.number' = :phoneNumber", { phoneNumber })
       .andWhere("user.accountId = :account", { account })
@@ -112,7 +115,7 @@ export class EntityManagerWrapperService {
   }
 
   public async findUserByUidAndDocumentByCountry(document: string, uid: string, countryId: number, accountId: number) {
-    const user = await this.connection.getRepository(User)
+    const user = await this.readConnection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.documentByUser", "document")
       .where("user.uid = :uid", { uid })
@@ -124,7 +127,7 @@ export class EntityManagerWrapperService {
   }
 
   public async findUserByUidAndCountry(uid: string) {
-    let user = await this.connection.getRepository(User)
+    let user = await this.readConnection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.documentByUser", "document")
       .where("user.uid = :uid", { uid });
@@ -133,7 +136,7 @@ export class EntityManagerWrapperService {
   }
 
   public async findUserByUidWithShippingAndBilling(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto) {
-    const user = await this.connection.getRepository(User)
+    const user = await this.readConnection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.billingDataByUser", "billingDataByUser")
       .leftJoinAndSelect("user.shippingAddressByUser", "shippingAddressByUser")
@@ -146,7 +149,7 @@ export class EntityManagerWrapperService {
   }
 
   public async findUserByUidWithShipping(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto) {
-    const user = await this.connection.getRepository(User)
+    const user = await this.readConnection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.shippingAddressByUser", "shippingAddressByUser")
       .leftJoinAndSelect("user.documentByUser", "document")
@@ -157,27 +160,27 @@ export class EntityManagerWrapperService {
   }
 
   public async findUserByUidWithBilling(uid: string, findUserBillingShippingDto: FindUserBillingShippingDto) {
-    const user = await this.connection.getRepository(User)
-        .createQueryBuilder("user")
-        .leftJoinAndSelect("user.billingDataByUser", "billingDataByUser")
-        .leftJoinAndSelect("user.documentByUser", "document")
-        .where("user.uid = :uid", { uid })
-        .andWhere("billingDataByUser.id = :billing", { billing: findUserBillingShippingDto.billing })
-        .getOne();
+    const user = await this.readConnection.getRepository(User)
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.billingDataByUser", "billingDataByUser")
+      .leftJoinAndSelect("user.documentByUser", "document")
+      .where("user.uid = :uid", { uid })
+      .andWhere("billingDataByUser.id = :billing", { billing: findUserBillingShippingDto.billing })
+      .getOne();
     return user;
   }
 
   public async findUserByUidWithDocument(uid: string) {
-    const user = await this.connection.getRepository(User)
-        .createQueryBuilder("user")
-        .leftJoinAndSelect("user.documentByUser", "document")
-        .where("user.uid = :uid", { uid })
-        .getOne();
+    const user = await this.readConnection.getRepository(User)
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.documentByUser", "document")
+      .where("user.uid = :uid", { uid })
+      .getOne();
     return user;
   }
 
   public async findDefaultBillingByUser(userId: number) {
-    const billingData = await this.connection.getRepository(BillingData)
+    const billingData = await this.readConnection.getRepository(BillingData)
       .createQueryBuilder("billing-data")
       .where("billing-data.default = 1")
       .andWhere("billing-data.userId = :userId", { userId })
@@ -185,7 +188,7 @@ export class EntityManagerWrapperService {
     return billingData;
   }
   public async findDefaultShippingAddressByUser(userId: number) {
-    const shippingAddress = await this.connection.getRepository(ShippingAddress)
+    const shippingAddress = await this.readConnection.getRepository(ShippingAddress)
       .createQueryBuilder("shipping-address")
       .where("shipping-address.default = 1")
       .andWhere("shipping-address.userId = :userId", { userId })
@@ -195,7 +198,7 @@ export class EntityManagerWrapperService {
 
   public async findUserByFullText(accountId: number, querySearch: string, size: number, findBy: string | null) {
     console.log("Find account", accountId)
-    const query = this.connection.getRepository(User)
+    const query = this.readConnection.getRepository(User)
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.documentByUser", "document")
       .where("user.accountId = :accountIdUser", { accountIdUser: accountId })
@@ -205,15 +208,14 @@ export class EntityManagerWrapperService {
       if (findBy == 'uid') {
         return await query.andWhere("user.uid = :uid", { uid: querySearch }).getMany();
       }
-      query.andWhere("((user.email like :email) or (user.phone->'$.number' = :phoneNumber) or (document.document like :document))", 
-      { 
-        email: querySearch + '%',
-        phoneNumber: querySearch,
-        document: querySearch + '%'
-       }
+      query.andWhere("((user.email like :email) or (user.phone->'$.number' = :phoneNumber) or (document.document like :document))",
+        {
+          email: querySearch + '%',
+          phoneNumber: querySearch,
+          document: querySearch + '%'
+        }
       );
     }
     return await query.getMany();
   }
-
 }

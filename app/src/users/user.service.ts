@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import * as _ from 'lodash';
 import { getConnection, getManager, QueryRunner } from 'typeorm';
-import { Document } from '../../src/entity/Document';
-import { User } from '../../src/entity/User';
-import { EntityManagerWrapperService } from '../../src/utils/entity-manager-wrapper.service';
+import { Document } from '../entity/Document';
+import { User } from '../entity/User';
+import { EntityManagerWrapperService } from '../utils/entity-manager-wrapper.service';
 import { DynamicFilterDto } from './dto/dynamic-filter.dto';
 import { FindUserBillingShippingDto } from './dto/find-user-billing-shipping.dto';
 import { UserUpdateDto } from './dto/user-update-dto';
@@ -16,7 +16,7 @@ export class UserService {
   constructor() { }
 
   async saveUser(user: UserDto) {
-    const connection = getConnection().createQueryRunner();
+    const connection = getConnection('write').createQueryRunner();
     return await this.create(user, connection);
   }
 
@@ -68,7 +68,7 @@ export class UserService {
   }
 
   public async updateUser(userDto: UserUpdateDto) {
-    const connection = getConnection().createQueryRunner();
+    const connection = getConnection('write').createQueryRunner();
     return await this.update(userDto, connection);
   }
 

@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import * as _ from "lodash";
 import { IPaginationOptions, Pagination } from "nestjs-typeorm-paginate";
 import { getManager } from "typeorm";
-import { ShippingAddress } from "../../src/entity/ShippingAddress";
-import { UserService } from "../../src/users/user.service";
-import { EntityManagerWrapperService } from "../../src/utils/entity-manager-wrapper.service";
+import { ShippingAddress } from "../entity/ShippingAddress";
+import { UserService } from "../users/user.service";
+import { EntityManagerWrapperService } from "../utils/entity-manager-wrapper.service";
 import { ShippingAddressDto } from "./dto/shipping-address.dto";
 import { orderByEnum } from "./enums/order-by.enum";
 

@@ -5,9 +5,9 @@ import {
   Pagination
 } from 'nestjs-typeorm-paginate';
 import { getManager } from "typeorm";
-import { BillingData } from "../../src/entity/BillingData";
-import { UserService } from "../../src/users/user.service";
-import { EntityManagerWrapperService } from "../../src/utils/entity-manager-wrapper.service";
+import { BillingData } from "../entity/BillingData";
+import { UserService } from "../users/user.service";
+import { EntityManagerWrapperService } from "../utils/entity-manager-wrapper.service";
 import { BillingDataDto } from "./dto/billing-data.dto";
 import { orderByEnum } from "./enums/order-by.enum";
 

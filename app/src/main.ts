@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
+import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import { uid } from './common/middleware/uid.middleware';
 import { ValidationPipe } from './validation.pipe';
@@ -12,6 +13,8 @@ async function bootstrap() {
   app.use(bodyParser.json());
   app.useGlobalPipes(new ValidationPipe());
   app.use(uid);
+
+  dotenv.config();
 
   const options = new DocumentBuilder()
     .setTitle('API Users')

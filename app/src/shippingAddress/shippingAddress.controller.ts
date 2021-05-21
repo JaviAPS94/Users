@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query } from '@nestjs/common';
-import { orderByEnum } from '../../src/billingData/enums/order-by.enum';
+import { orderByEnum } from '../billingData/enums/order-by.enum';
 import { ShippingAddressDto } from './dto/shipping-address.dto';
 import { ShippingAddressService } from './shippingAddress.service';
 import { ShippingAddressTransformer } from './transformers/shippingAddress.transformer';
