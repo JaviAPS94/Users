@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BillingDataModule } from './billingData/billingData.module';
 import { HealthModule } from './health/health.module';
@@ -7,6 +8,7 @@ import { ShippingAddressModule } from './shippingAddress/shippingAddress.module'
 import { UserModule } from './users/user.module';
 import { EntityManagerWrapperService } from './utils/entity-manager-wrapper.service';
 import * as dotenv from 'dotenv';
+import { APP_GUARD } from '@nestjs/core';
 
 dotenv.config();
 @Module({
@@ -64,8 +66,16 @@ dotenv.config();
     UserModule,
     BillingDataModule,
     ShippingAddressModule,
-    LivingPlaceModule],
-  providers: [EntityManagerWrapperService],
+    LivingPlaceModule,
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 12000,
+    })],
+  providers: [EntityManagerWrapperService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    }],
   controllers: []
 })
 export class AppModule { }
