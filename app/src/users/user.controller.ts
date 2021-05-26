@@ -145,6 +145,7 @@ export class UserController {
 
   @Get('/findUsers')
   async findUsersV2(@Query() query: any) {
+    console.time(`FindUser`);
     let result: any;
     try {
       const users = await this.userService.getUsersByFullTextSearch(query);
@@ -155,6 +156,7 @@ export class UserController {
         error: 'An error ocurred retrieving the data ' + error.message,
       }, HttpStatus.FORBIDDEN);
     }
+    console.timeLog(`FindUser`);
     return result;
   }
 }
