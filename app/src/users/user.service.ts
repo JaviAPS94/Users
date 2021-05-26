@@ -244,7 +244,7 @@ export class UserService {
     connection: EntityManagerWrapperService,
   ) {
     try {
-      return await connection.findUserByFullText(query.account, query.parameter, query.size, query.findBy || null);
+      return await connection.findUserByFullText(query.account, query.parameter, query.size, query.findBy || null, query.countryId || null);
     } catch (error) {
       console.log('ERROR: findUsersByFullText Find error: ' + error.message);
       throw new Error('findUsersByFullText Find error: ' + error.message);

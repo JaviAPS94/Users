@@ -196,7 +196,7 @@ export class EntityManagerWrapperService {
     return shippingAddress;
   }
 
-  public async findUserByFullText(accountId: number, querySearch: string, size: number, findBy: string | null) {
+  public async findUserByFullText(accountId: number, querySearch: string, size: number, findBy: string | null, countryId: any | null) {
     console.log("Find account", accountId)
     const query = this.readConnection.getRepository(User)
       .createQueryBuilder("user")
@@ -207,6 +207,13 @@ export class EntityManagerWrapperService {
     if (querySearch) {
       if (findBy == 'uid') {
         return await query.andWhere("user.uid = :uid", { uid: querySearch }).getMany();
+      }
+      if (countryId != null) {
+        query.andWhere("document.countryId = :countryId",
+          {
+            countryId:countryId,
+          }
+        );
       }
       query.andWhere("((user.email like :email) or (user.phone->'$.number' = :phoneNumber) or (document.document like :document) or (user.name like :name) or (user.lastname like :lastname))",
         {
